@@ -148,6 +148,22 @@ export class HomeScene extends Phaser.Scene {
         })
         .setOrigin(0.5);
     });
+
+    const year = new Date().getFullYear();
+    this.add
+      .text(
+        width / 2,
+        height * 0.975,
+        `Developed by Dad \u2764\uFE0F  \u00A9 ${year} prateekchhabra.com`,
+        {
+          fontFamily: FONTS.body,
+          fontSize: `${Math.min(16, width * 0.028)}px`,
+          color: "#ffffff",
+          alpha: 0.55,
+        },
+      )
+      .setOrigin(0.5)
+      .setAlpha(0.55);
   }
 
   _makeBtn(x, y, w, h, label, subLabel, color, hoverColor, onClick) {
