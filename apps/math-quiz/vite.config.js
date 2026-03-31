@@ -6,4 +6,7 @@ export default defineConfig({
     outDir: "dist",
     assetsDir: "assets",
   },
+  server: {
+    port: Number(process.env.PORT) || 5174,
+  },
 });
