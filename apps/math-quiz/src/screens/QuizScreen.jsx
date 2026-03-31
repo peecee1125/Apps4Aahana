@@ -91,8 +91,8 @@ export default function QuizScreen({ subject, testIdx, onComplete, onBack }) {
 
       {/* Stats bar */}
       <div
-        className="flex items-center justify-between px-5 py-2 shrink-0 text-sm font-bold"
-        style={{ background:'rgba(0,0,0,0.3)' }}
+        className="flex items-center justify-between py-2 shrink-0 text-base font-bold"
+        style={{ background:'rgba(0,0,0,0.3)', paddingLeft:'max(20px,env(safe-area-inset-left))', paddingRight:'max(20px,env(safe-area-inset-right))' }}
       >
         <span className="text-white/80">
           Q <span style={{ color:'#fbbf24' }}>{state.index + 1}</span> / {PER_ROUND}
@@ -106,7 +106,7 @@ export default function QuizScreen({ subject, testIdx, onComplete, onBack }) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col min-h-0 px-5 pt-3 gap-3">
+      <div className="flex-1 flex flex-col min-h-0 pt-3 gap-3" style={{ paddingLeft:'max(20px,env(safe-area-inset-left))', paddingRight:'max(20px,env(safe-area-inset-right))' }}>
         {/* Passage */}
         <AnimatePresence mode="wait">
           {q.passage && (
@@ -128,7 +128,7 @@ export default function QuizScreen({ subject, testIdx, onComplete, onBack }) {
             initial={{ opacity:0, y:8 }}
             animate={{ opacity:1, y:0 }}
             exit={{ opacity:0 }}
-            className="text-white font-extrabold text-xl leading-snug shrink-0"
+            className="text-white font-extrabold text-2xl leading-snug shrink-0"
           >{q.question}</motion.p>
         </AnimatePresence>
 
@@ -147,13 +147,13 @@ export default function QuizScreen({ subject, testIdx, onComplete, onBack }) {
                 whileTap={!answered ? { scale:0.94 } : {}}
                 onClick={() => answer(choice)}
                 className="flex items-center rounded-2xl px-4 py-3 text-left shadow-lg border border-white/10"
-                style={{ background: btnBg(choice), cursor: answered ? 'default' : 'pointer', transition:'background 0.25s' }}
+                style={{ background: btnBg(choice), cursor: answered ? 'default' : 'pointer', transition:'background 0.25s', minHeight: 110 }}
               >
                 <span
                   className="shrink-0 font-black text-sm mr-3 rounded-full flex items-center justify-center"
                   style={{ width:30, height:30, minWidth:30, background: btnBg(choice) === 'rgba(255,255,255,0.1)' ? subj.color : btnBg(choice), color:'white' }}
                 >{LABELS[i]}</span>
-                <span className="text-white font-semibold text-base leading-snug">{choice}</span>
+                <span className="text-white font-semibold text-xl leading-snug">{choice}</span>
               </motion.button>
             ))}
           </motion.div>
