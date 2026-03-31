@@ -1,0 +1,7 @@
+services:
+  math-quiz:
+    build:
+      context: ./apps/math-quiz
+    restart: unless-stopped
+    ports:
+      - "9080:80"

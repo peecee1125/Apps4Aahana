@@ -1,0 +1,9 @@
+# Use this on the NAS after GitHub Actions has pushed the image to GHCR.
+# In Portainer: Stacks → Add stack → paste this (set image owner if needed).
+
+services:
+  math-quiz:
+    image: ghcr.io/peecee1125/apps4aahana-math-quiz:latest
+    restart: unless-stopped
+    ports:
+      - "9080:80"
