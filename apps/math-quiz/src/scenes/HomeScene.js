@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import {
   COLORS,
   FONTS,
+  applyTapEffect,
   createNavHeader,
   paintPlayfulBackground,
   playSound,
@@ -33,7 +34,7 @@ export class HomeScene extends Phaser.Scene {
     this.add
       .text(width / 2, heroY, "\u{1F31F} Enter Aahana\u2019s App \u{1F31F}", {
         fontFamily: FONTS.display,
-        fontSize: `${Math.min(44, width * 0.073)}px`,
+        fontSize: `${Math.min(38, width * 0.04)}px`,
         fontStyle: "bold",
         color: COLORS.accent,
         align: "center",
@@ -42,21 +43,21 @@ export class HomeScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.add
-      .text(width / 2, heroY + Math.min(52, height * 0.044), "Pick a world below and earn stars! \u2B50", {
+      .text(width / 2, heroY + Math.min(40, height * 0.06), "Pick a world below and earn stars! \u2B50", {
         fontFamily: FONTS.body,
-        fontSize: `${Math.min(22, width * 0.038)}px`,
+        fontSize: `${Math.min(20, width * 0.022)}px`,
         color: COLORS.muted,
         align: "center",
       })
       .setOrigin(0.5);
 
-    const cols = 2;
-    const padX = width * 0.04;
-    const gapX = width * 0.03;
-    const gapY = Math.min(height * 0.016, 18);
-    const cardW = (width - padX * 2 - gapX) / cols;
-    const cardH = Math.min(height * 0.118, 138);
-    const gridStartY = height * 0.25;
+    const cols = 4;
+    const padX = width * 0.03;
+    const gapX = width * 0.015;
+    const gapY = Math.min(height * 0.025, 18);
+    const cardW = (width - padX * 2 - gapX * (cols - 1)) / cols;
+    const cardH = Math.min(height * 0.28, 160);
+    const gridStartY = height * 0.32;
 
     SUBJECTS.forEach((s, i) => {
       const col = i % cols;
@@ -97,31 +98,31 @@ export class HomeScene extends Phaser.Scene {
         playSound(this, "click");
         this.scene.start("SubjectMenuScene", { subject: key });
       });
+    applyTapEffect(this, card);
     card.setStrokeStyle(special ? 5 : 3, special ? 0xffa500 : 0xffffff, special ? 0.7 : 0.18);
 
-    const emojiSize = Math.min(h * 0.52, 58);
-    this.add.text(cx - w * 0.26, cy, emoji, { fontSize: `${emojiSize}px` }).setOrigin(0.5);
+    const emojiSize = Math.min(h * 0.36, 48);
+    this.add.text(cx, cy - h * 0.26, emoji, { fontSize: `${emojiSize}px` }).setOrigin(0.5);
 
-    const labelX = cx + w * 0.08;
-    this.add.text(labelX, cy - h * 0.17, label, {
+    this.add.text(cx, cy + h * 0.08, label, {
       fontFamily: FONTS.display,
-      fontSize: `${Math.min(27, w * 0.135)}px`,
+      fontSize: `${Math.min(22, w * 0.085)}px`,
       fontStyle: "bold",
       color: textColor,
     }).setOrigin(0.5);
 
-    this.add.text(labelX, cy + h * 0.16, sub, {
+    this.add.text(cx, cy + h * 0.3, sub, {
       fontFamily: FONTS.body,
-      fontSize: `${Math.min(15, w * 0.078)}px`,
+      fontSize: `${Math.min(13, w * 0.05)}px`,
       color: textColor,
-      wordWrap: { width: w * 0.6 },
+      wordWrap: { width: w * 0.9 },
       align: "center",
     }).setOrigin(0.5).setAlpha(0.82);
 
     if (special) {
-      this.add.text(cx + w * 0.3, cy - h * 0.28, "\u{1F3C6} CHALLENGE", {
+      this.add.text(cx, cy - h * 0.44, "\u{1F3C6} CHALLENGE", {
         fontFamily: FONTS.body,
-        fontSize: `${Math.min(12, w * 0.06)}px`,
+        fontSize: `${Math.min(11, w * 0.045)}px`,
         fontStyle: "bold",
         color: "#7a3c00",
       }).setOrigin(0.5);

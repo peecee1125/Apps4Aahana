@@ -4,7 +4,7 @@
   "description": "A colorful 2nd grade learning app with Math, ELA, and more worlds coming soon",
   "start_url": ".",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "landscape",
   "background_color": "#1a0f2e",
   "theme_color": "#2d1b4e",
   "icons": [

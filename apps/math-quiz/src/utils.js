@@ -175,7 +175,7 @@ export function playSound(holder, type) {
       osc.frequency.value = freq;
       osc.type = oscType;
       const t = ctx.currentTime + startOffset;
-      gain.gain.setValueAtTime(0.22, t);
+      gain.gain.setValueAtTime(0.10, t);
       gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
       osc.start(t);
       osc.stop(t + duration);
@@ -185,7 +185,7 @@ export function playSound(holder, type) {
       note(523, 0, 0.25);
       note(659, 0.12, 0.25);
     } else if (type === "wrong") {
-      note(180, 0, 0.3, "sawtooth");
+      note(200, 0, 0.2, "triangle");
     } else if (type === "fanfare") {
       [523, 659, 784, 1047].forEach((f, i) => note(f, i * 0.15, 0.32));
     } else if (type === "click") {
@@ -289,4 +289,16 @@ export function emitConfetti(scene, x, y) {
       onComplete: () => dot.destroy(),
     });
   }
+}
+
+export function applyTapEffect(scene, obj) {
+  obj.on("pointerdown", () => {
+    scene.tweens.add({ targets: obj, scaleX: 0.94, scaleY: 0.94, duration: 40 });
+  });
+  obj.on("pointerup", () => {
+    scene.tweens.add({ targets: obj, scaleX: 1, scaleY: 1, duration: 100 });
+  });
+  obj.on("pointerout", () => {
+    scene.tweens.add({ targets: obj, scaleX: 1, scaleY: 1, duration: 100 });
+  });
 }

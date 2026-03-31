@@ -11,8 +11,8 @@ new Phaser.Game({
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: 720,
-    height: 1280,
+    width: 1280,
+    height: 800,
   },
   scene: [HomeScene, SubjectMenuScene, TCAPQuizScene, MathQuizScene],
 });

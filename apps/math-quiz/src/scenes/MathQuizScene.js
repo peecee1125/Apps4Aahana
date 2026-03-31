@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import {
   COLORS,
   FONTS,
+  applyTapEffect,
   emitConfetti,
   paintPlayfulBackground,
   playSound,
@@ -217,6 +218,7 @@ export class MathQuizScene extends Phaser.Scene {
         })
         .on("pointerdown", () => this.pick(val));
       btn.setStrokeStyle(3, 0xffffff, 0.15);
+      applyTapEffect(this, btn);
 
       const label = this.add
         .text(x, y, String(val), {
@@ -351,6 +353,7 @@ export class MathQuizScene extends Phaser.Scene {
       .on("pointerover", () => btn.setFillStyle(COLORS.btnHover))
       .on("pointerout", () => btn.setFillStyle(COLORS.btn))
       .on("pointerdown", () => this.scene.restart({ round: this.round + 1 }));
+    applyTapEffect(this, btn);
 
     this.add
       .text(width / 2, playAgainY, "Play Again! \uD83D\uDE80", {
@@ -368,6 +371,7 @@ export class MathQuizScene extends Phaser.Scene {
       .on("pointerover", () => homeBtn.setFillStyle(0x5a3c8a))
       .on("pointerout", () => homeBtn.setFillStyle(0x4a2c7a))
       .on("pointerdown", () => this.scene.start("HomeScene"));
+    applyTapEffect(this, homeBtn);
 
     this.add
       .text(width / 2, homeY, "\uD83C\uDFE0 Home", {

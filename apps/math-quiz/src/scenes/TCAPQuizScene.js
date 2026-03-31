@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import {
   COLORS,
   FONTS,
+  applyTapEffect,
   shuffle,
   playSound,
   emitConfetti,
@@ -190,16 +191,23 @@ export class TCAPQuizScene extends Phaser.Scene {
     curY += qText.height + 22;
 
     const shuffledChoices = shuffle(q.choices);
-    const btnW = Math.min(width * 0.85, 560);
-    const btnH = Math.min(height * 0.1, 108);
-    const btnGap = Math.min(height * 0.015, 16);
-    const labelFontSize = `${Math.min(25, btnW * 0.072)}px`;
+    const btnCols = 2;
+    const btnW = Math.min(width * 0.44, 520);
+    const btnH = Math.min(height * 0.11, 90);
+    const btnGapX = Math.min(width * 0.02, 20);
+    const btnGapY = Math.min(height * 0.02, 16);
+    const labelFontSize = `${Math.min(22, btnW * 0.06)}px`;
+    const gridW = btnCols * btnW + (btnCols - 1) * btnGapX;
+    const startX = width / 2 - gridW / 2 + btnW / 2;
 
     shuffledChoices.forEach((choice, i) => {
-      const y = curY + i * (btnH + btnGap) + btnH / 2;
+      const col = i % btnCols;
+      const row = Math.floor(i / btnCols);
+      const x = startX + col * (btnW + btnGapX);
+      const y = curY + row * (btnH + btnGapY) + btnH / 2;
 
       const shadow = this.add.rectangle(
-        width / 2,
+        x,
         y + 7,
         btnW,
         btnH,
@@ -207,7 +215,7 @@ export class TCAPQuizScene extends Phaser.Scene {
         0.26,
       );
       const btn = this.add
-        .rectangle(width / 2, y, btnW, btnH, COLORS.btn)
+        .rectangle(x, y, btnW, btnH, COLORS.btn)
         .setInteractive({ useHandCursor: true })
         .on("pointerover", () => {
           if (!this.locked) btn.setFillStyle(COLORS.btnHover);
@@ -222,9 +230,10 @@ export class TCAPQuizScene extends Phaser.Scene {
         })
         .on("pointerdown", () => this._pick(choice, btn));
       btn.setStrokeStyle(3, 0xffffff, 0.15);
+      applyTapEffect(this, btn);
 
       const label = this.add
-        .text(width / 2, y, choice, {
+        .text(x, y, choice, {
           fontFamily: FONTS.body,
           fontSize: labelFontSize,
           fontStyle: "bold",
@@ -391,6 +400,7 @@ export class TCAPQuizScene extends Phaser.Scene {
           subject: this.subject,
         }),
       );
+    applyTapEffect(this, playAgainBtn);
 
     this.add
       .text(width / 2, btn1Y, "Play Again! \uD83D\uDE80", {

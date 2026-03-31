@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import {
   COLORS,
   FONTS,
+  applyTapEffect,
   createCard,
   createNavHeader,
   getHS,
@@ -150,6 +151,7 @@ export class SubjectMenuScene extends Phaser.Scene {
           });
         });
       btn.setStrokeStyle(4, 0xffffff, 0.18);
+      applyTapEffect(this, btn);
       shadow.setDepth(0);
 
       this.add
