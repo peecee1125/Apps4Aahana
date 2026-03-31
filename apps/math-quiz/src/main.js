@@ -4,6 +4,8 @@ import { SubjectMenuScene } from "./scenes/SubjectMenuScene.js";
 import { TCAPQuizScene } from "./scenes/TCAPQuizScene.js";
 import { MathQuizScene } from "./scenes/MathQuizScene.js";
 
+const dpr = window.devicePixelRatio || 1;
+
 new Phaser.Game({
   type: Phaser.AUTO,
   parent: "game-container",
@@ -11,13 +13,12 @@ new Phaser.Game({
   antialias: true,
   antialiasGL: true,
   roundPixels: true,
-  resolution: window.devicePixelRatio || 1,
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: 1280,
     height: 800,
-    zoom: 1 / (window.devicePixelRatio || 1),
+    zoom: dpr >= 2 ? 2 : 1,
   },
   scene: [HomeScene, SubjectMenuScene, TCAPQuizScene, MathQuizScene],
 });
