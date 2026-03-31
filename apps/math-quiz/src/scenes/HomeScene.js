@@ -2,11 +2,21 @@ import Phaser from "phaser";
 import {
   COLORS,
   FONTS,
-  createCard,
   createNavHeader,
   paintPlayfulBackground,
   playSound,
 } from "../utils.js";
+
+const SUBJECTS = [
+  { key: "math",      emoji: "\u{1F522}", label: "Math",        sub: "Numbers, operations & TCAP",     color: 0xff6b9d, hover: 0xff8fb8, textColor: "#22153d" },
+  { key: "ela",       emoji: "\u{1F4D6}", label: "ELA",         sub: "Reading, grammar & writing",     color: 0x4dc7ff, hover: 0x7ed9ff, textColor: "#22153d" },
+  { key: "science",   emoji: "\u{1F9EA}", label: "Science",     sub: "Life, earth & physical science", color: 0x6bcb77, hover: 0x8fdd8f, textColor: "#22153d" },
+  { key: "geography", emoji: "\u{1F30D}", label: "Geography",   sub: "Continents, maps & landforms",   color: 0xffb347, hover: 0xffc96b, textColor: "#22153d" },
+  { key: "solar",     emoji: "\u2600\uFE0F", label: "Solar System", sub: "Planets, stars & space",  color: 0xb39ddb, hover: 0xcab8ef, textColor: "#22153d" },
+  { key: "dinosaurs", emoji: "\u{1F996}", label: "Dinosaurs",   sub: "Fossils, periods & dino facts",  color: 0xef476f, hover: 0xf56d8d, textColor: "#fff8f0" },
+  { key: "facts",     emoji: "\u{1F4A1}", label: "Fun Facts",   sub: "Amazing world knowledge",        color: 0x2ec4b6, hover: 0x4dd9cc, textColor: "#22153d" },
+  { key: "advanced",  emoji: "\u2B50",   label: "Advanced",    sub: "2nd\u21923rd grade challenge",  color: 0xffd93d, hover: 0xffe570, textColor: "#22153d", special: true },
+];
 
 export class HomeScene extends Phaser.Scene {
   constructor() {
@@ -17,184 +27,104 @@ export class HomeScene extends Phaser.Scene {
     const { width, height } = this.scale;
 
     paintPlayfulBackground(this);
-    createNavHeader(this, { title: "✨ Aahana’s App", showHome: false });
+    createNavHeader(this, { title: "\u2728 Aahana\u2019s App", showHome: false });
 
-    const { shadow: heroShadow, card: heroCard } = createCard(
-      this,
-      width / 2,
-      height * 0.2,
-      Math.min(width * 0.88, 600),
-      Math.min(height * 0.2, 220),
-      COLORS.panel,
-    );
-    heroShadow.setAlpha(0.32);
-    heroCard.setAlpha(0.94);
-
-    const iconR = Math.min(width * 0.1, 68);
-    this.add.circle(width / 2, height * 0.135, iconR, COLORS.sky, 0.95);
+    const heroY = height * 0.14;
     this.add
-      .text(width / 2, height * 0.135, "\u2728", {
-        fontSize: `${Math.min(68, width * 0.12)}px`,
-      })
-      .setOrigin(0.5);
-
-    this.add
-      .text(width / 2, height * 0.2, "Enter Aahana's App", {
+      .text(width / 2, heroY, "\u{1F31F} Enter Aahana\u2019s App \u{1F31F}", {
         fontFamily: FONTS.display,
-        fontSize: `${Math.min(56, width * 0.092)}px`,
+        fontSize: `${Math.min(44, width * 0.073)}px`,
         fontStyle: "bold",
         color: COLORS.accent,
         align: "center",
-        lineSpacing: 4,
+        wordWrap: { width: width * 0.88 },
       })
       .setOrigin(0.5);
 
     this.add
-      .text(
-        width / 2,
-        height * 0.255,
-        "Play, practice, and earn stars across colorful learning worlds.",
-        {
-          fontFamily: FONTS.body,
-          fontSize: `${Math.min(24, width * 0.042)}px`,
-          color: COLORS.text,
-          wordWrap: { width: width * 0.78 },
-          align: "center",
-        },
-      )
-      .setOrigin(0.5);
-
-    this.add
-      .text(width / 2, height * 0.33, "Choose a world to begin", {
+      .text(width / 2, heroY + Math.min(52, height * 0.044), "Pick a world below and earn stars! \u2B50", {
         fontFamily: FONTS.body,
-        fontSize: `${Math.min(28, width * 0.047)}px`,
+        fontSize: `${Math.min(22, width * 0.038)}px`,
         color: COLORS.muted,
+        align: "center",
       })
       .setOrigin(0.5);
 
-    const btnW = Math.min(width * 0.78, 500);
-    const btnH = Math.min(height * 0.11, 124);
-    const btnGap = Math.min(height * 0.035, 40);
-    const btn1Y = height * 0.45;
-    const btn2Y = btn1Y + btnH + btnGap;
-
-    this._makeBtn(
-      width / 2,
-      btn1Y,
-      btnW,
-      btnH,
-      "\uD83D\uDD22  Math Quiz",
-      "Numbers, shapes, patterns, and TCAP practice",
-      COLORS.btn,
-      COLORS.btnHover,
-      () => {
-        playSound(this, "click");
-        this.scene.start("SubjectMenuScene", { subject: "math" });
-      },
-    );
-
-    this._makeBtn(
-      width / 2,
-      btn2Y,
-      btnW,
-      btnH,
-      "\uD83D\uDCD6  ELA Quiz",
-      "Reading, grammar, writing, and practice tests",
-      COLORS.btnAlt,
-      COLORS.btnAltHover,
-      () => {
-        playSound(this, "click");
-        this.scene.start("SubjectMenuScene", { subject: "ela" });
-      },
-    );
-
-    this.add
-      .text(width / 2, height * 0.67, "Coming soon", {
-        fontFamily: FONTS.display,
-        fontSize: `${Math.min(28, width * 0.05)}px`,
-        fontStyle: "bold",
-        color: COLORS.accent,
-      })
-      .setOrigin(0.5);
-
-    const roadmap = [
-      { label: "\uD83E\uDDEA Science", color: COLORS.mint },
-      { label: "\uD83C\uDF0D Geography", color: COLORS.orange },
-      { label: "\u2600\uFE0F Solar System", color: COLORS.sky },
-      { label: "\uD83E\uDDA6 Dinosaurs", color: COLORS.berry },
-      { label: "\uD83D\uDCA1 Fun Facts", color: COLORS.teal },
-    ];
-    const chipW = Math.min(width * 0.26, 168);
-    const chipH = 54;
     const cols = 2;
-    const gapX = 18;
-    const gapY = 14;
-    const totalW = cols * chipW + gapX;
-    const startX = width / 2 - totalW / 2 + chipW / 2;
-    const startY = height * 0.73;
+    const padX = width * 0.04;
+    const gapX = width * 0.03;
+    const gapY = Math.min(height * 0.016, 18);
+    const cardW = (width - padX * 2 - gapX) / cols;
+    const cardH = Math.min(height * 0.118, 138);
+    const gridStartY = height * 0.25;
 
-    roadmap.forEach((item, index) => {
-      const col = index % cols;
-      const row = Math.floor(index / cols);
-      const isLast = index === roadmap.length - 1;
-      const x = isLast && row === 2 ? width / 2 : startX + col * (chipW + gapX);
-      const y = startY + row * (chipH + gapY);
-      const chip = this.add.rectangle(x, y, chipW, chipH, item.color, 0.92);
-      chip.setStrokeStyle(3, 0xffffff, 0.2);
-      this.add
-        .text(x, y, item.label, {
-          fontFamily: FONTS.body,
-          fontSize: `${Math.min(20, width * 0.032)}px`,
-          fontStyle: "bold",
-          color: COLORS.ink,
-        })
-        .setOrigin(0.5);
+    SUBJECTS.forEach((s, i) => {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const cx = padX + col * (cardW + gapX) + cardW / 2;
+      const cy = gridStartY + row * (cardH + gapY) + cardH / 2;
+      this._makeCard(cx, cy, cardW, cardH, s);
     });
 
     const year = new Date().getFullYear();
     this.add
-      .text(
-        width / 2,
-        height * 0.975,
-        `Developed by Dad \u2764\uFE0F  \u00A9 ${year} prateekchhabra.com`,
-        {
-          fontFamily: FONTS.body,
-          fontSize: `${Math.min(16, width * 0.028)}px`,
-          color: "#ffffff",
-          alpha: 0.55,
-        },
-      )
+      .text(width / 2, height * 0.977, `Developed by Dad \u2764\uFE0F  \u00A9 ${year} prateekchhabra.com`, {
+        fontFamily: FONTS.body,
+        fontSize: `${Math.min(15, width * 0.026)}px`,
+        color: "#ffffff",
+      })
       .setOrigin(0.5)
-      .setAlpha(0.55);
+      .setAlpha(0.5);
   }
 
-  _makeBtn(x, y, w, h, label, subLabel, color, hoverColor, onClick) {
-    const shadow = this.add.rectangle(x, y + 8, w, h, 0x120a22, 0.28);
-    const btn = this.add
-      .rectangle(x, y, w, h, color)
+  _makeCard(cx, cy, w, h, subject) {
+    const { key, emoji, label, sub, color, hover, textColor, special } = subject;
+
+    this.add.rectangle(cx + 4, cy + 6, w, h, 0x000000, 0.22);
+
+    const card = this.add
+      .rectangle(cx, cy, w, h, color)
       .setInteractive({ useHandCursor: true })
-      .on("pointerover", () => btn.setFillStyle(hoverColor))
-      .on("pointerout", () => btn.setFillStyle(color))
-      .on("pointerdown", onClick);
-    btn.setStrokeStyle(4, 0xffffff, 0.18);
-
-    this.add
-      .text(x, y - h * 0.16, label, {
-        fontFamily: FONTS.display,
-        fontSize: `${Math.min(38, w * 0.082)}px`,
-        fontStyle: "bold",
-        color: COLORS.text,
+      .on("pointerover", () => {
+        card.setFillStyle(hover);
+        this.tweens.add({ targets: card, scaleX: 1.03, scaleY: 1.03, duration: 80 });
       })
-      .setOrigin(0.5);
+      .on("pointerout", () => {
+        card.setFillStyle(color);
+        this.tweens.add({ targets: card, scaleX: 1, scaleY: 1, duration: 80 });
+      })
+      .on("pointerdown", () => {
+        playSound(this, "click");
+        this.scene.start("SubjectMenuScene", { subject: key });
+      });
+    card.setStrokeStyle(special ? 5 : 3, special ? 0xffa500 : 0xffffff, special ? 0.7 : 0.18);
 
-    this.add
-      .text(x, y + h * 0.18, subLabel, {
+    const emojiSize = Math.min(h * 0.52, 58);
+    this.add.text(cx - w * 0.26, cy, emoji, { fontSize: `${emojiSize}px` }).setOrigin(0.5);
+
+    const labelX = cx + w * 0.08;
+    this.add.text(labelX, cy - h * 0.17, label, {
+      fontFamily: FONTS.display,
+      fontSize: `${Math.min(27, w * 0.135)}px`,
+      fontStyle: "bold",
+      color: textColor,
+    }).setOrigin(0.5);
+
+    this.add.text(labelX, cy + h * 0.16, sub, {
+      fontFamily: FONTS.body,
+      fontSize: `${Math.min(15, w * 0.078)}px`,
+      color: textColor,
+      wordWrap: { width: w * 0.6 },
+      align: "center",
+    }).setOrigin(0.5).setAlpha(0.82);
+
+    if (special) {
+      this.add.text(cx + w * 0.3, cy - h * 0.28, "\u{1F3C6} CHALLENGE", {
         fontFamily: FONTS.body,
-        fontSize: `${Math.min(20, w * 0.04)}px`,
-        color: COLORS.text,
-      })
-      .setOrigin(0.5);
-
-    return { shadow, btn };
+        fontSize: `${Math.min(12, w * 0.06)}px`,
+        fontStyle: "bold",
+        color: "#7a3c00",
+      }).setOrigin(0.5);
+    }
   }
 }
