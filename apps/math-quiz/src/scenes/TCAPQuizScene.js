@@ -1,10 +1,12 @@
 import Phaser from "phaser";
 import {
   COLORS,
+  FONTS,
   shuffle,
   playSound,
   emitConfetti,
   getHS,
+  paintPlayfulBackground,
   setHS,
   updateBestStreak,
 } from "../utils.js";
@@ -48,12 +50,21 @@ export class TCAPQuizScene extends Phaser.Scene {
   create() {
     const { width, height } = this.scale;
 
-    this.add.rectangle(width / 2, height / 2, width, height, COLORS.bg);
+    paintPlayfulBackground(this);
 
-    // --- Persistent header elements ---
+    this.headerPanel = this.add.rectangle(
+      width / 2,
+      height * 0.1,
+      Math.min(width * 0.92, 640),
+      Math.min(height * 0.15, 180),
+      this.subject === "math" ? COLORS.panel : COLORS.panelAlt,
+      0.95,
+    );
+    this.headerPanel.setStrokeStyle(4, 0xffffff, 0.16);
+
     this.titleText = this.add
       .text(width / 2, height * 0.055, this.testLabel, {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.display,
         fontSize: `${Math.min(28, width * 0.05)}px`,
         fontStyle: "bold",
         color: COLORS.accent,
@@ -62,7 +73,7 @@ export class TCAPQuizScene extends Phaser.Scene {
 
     this.qCountText = this.add
       .text(width / 2, height * 0.1, "", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.body,
         fontSize: `${Math.min(22, width * 0.04)}px`,
         color: COLORS.text,
       })
@@ -70,7 +81,7 @@ export class TCAPQuizScene extends Phaser.Scene {
 
     this.scoreText = this.add
       .text(width * 0.08, height * 0.15, "", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.display,
         fontSize: `${Math.min(22, width * 0.04)}px`,
         color: COLORS.text,
       })
@@ -78,7 +89,7 @@ export class TCAPQuizScene extends Phaser.Scene {
 
     this.streakText = this.add
       .text(width * 0.92, height * 0.15, "", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.display,
         fontSize: `${Math.min(20, width * 0.037)}px`,
         color: "#ffb347",
       })
@@ -86,7 +97,7 @@ export class TCAPQuizScene extends Phaser.Scene {
 
     this.feedbackText = this.add
       .text(width / 2, height * 0.93, "", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.display,
         fontSize: `${Math.min(26, width * 0.047)}px`,
         color: COLORS.accent,
       })
@@ -105,6 +116,7 @@ export class TCAPQuizScene extends Phaser.Scene {
   _onResize() {
     if (this.roundOver || this.locked) return;
     const { width, height } = this.scale;
+    this.headerPanel.setPosition(width / 2, height * 0.1);
     this.titleText.setPosition(width / 2, height * 0.055);
     this.qCountText.setPosition(width / 2, height * 0.1);
     this.scoreText.setPosition(width * 0.08, height * 0.15);
@@ -141,15 +153,15 @@ export class TCAPQuizScene extends Phaser.Scene {
 
     let curY = height * 0.2;
 
-    // ── Passage box (optional) ───────────────────────────────────────
     if (q.passage) {
       const pBg = this.add
         .rectangle(width / 2, curY, boxW, 10, COLORS.passage)
         .setOrigin(0.5, 0);
+      pBg.setStrokeStyle(3, 0xffffff, 0.12);
 
       const pText = this.add
         .text(width / 2 - boxW / 2 + textPad, curY + textPad, q.passage, {
-          fontFamily: "system-ui, -apple-system, sans-serif",
+          fontFamily: FONTS.body,
           fontSize: `${Math.min(21, width * 0.038)}px`,
           color: COLORS.muted,
           wordWrap: { width: boxW - textPad * 2 },
@@ -163,10 +175,9 @@ export class TCAPQuizScene extends Phaser.Scene {
       curY += pHeight + 16;
     }
 
-    // ── Question text ─────────────────────────────────────────────────
     const qText = this.add
       .text(width / 2, curY, q.question, {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.display,
         fontSize: `${Math.min(30, width * 0.056)}px`,
         fontStyle: "bold",
         color: COLORS.text,
@@ -178,7 +189,6 @@ export class TCAPQuizScene extends Phaser.Scene {
     this._dyn.push(qText);
     curY += qText.height + 22;
 
-    // ── Answer buttons (1 column) ─────────────────────────────────────
     const shuffledChoices = shuffle(q.choices);
     const btnW = Math.min(width * 0.85, 560);
     const btnH = Math.min(height * 0.1, 108);
@@ -188,6 +198,14 @@ export class TCAPQuizScene extends Phaser.Scene {
     shuffledChoices.forEach((choice, i) => {
       const y = curY + i * (btnH + btnGap) + btnH / 2;
 
+      const shadow = this.add.rectangle(
+        width / 2,
+        y + 7,
+        btnW,
+        btnH,
+        0x120a22,
+        0.26,
+      );
       const btn = this.add
         .rectangle(width / 2, y, btnW, btnH, COLORS.btn)
         .setInteractive({ useHandCursor: true })
@@ -203,10 +221,11 @@ export class TCAPQuizScene extends Phaser.Scene {
           }
         })
         .on("pointerdown", () => this._pick(choice, btn));
+      btn.setStrokeStyle(3, 0xffffff, 0.15);
 
       const label = this.add
         .text(width / 2, y, choice, {
-          fontFamily: "system-ui, -apple-system, sans-serif",
+          fontFamily: FONTS.body,
           fontSize: labelFontSize,
           fontStyle: "bold",
           color: COLORS.text,
@@ -215,7 +234,7 @@ export class TCAPQuizScene extends Phaser.Scene {
         })
         .setOrigin(0.5);
 
-      this._dyn.push(btn, label);
+      this._dyn.push(shadow, btn, label);
       this._btnRefs.push({ btn, choice });
     });
   }
@@ -290,21 +309,19 @@ export class TCAPQuizScene extends Phaser.Scene {
           ? "\u2B50\u2B50"
           : "\u2B50";
 
-    // Stars
     this.add
       .text(width / 2, height * 0.26, stars, {
         fontSize: `${Math.min(76, width * 0.13)}px`,
       })
       .setOrigin(0.5);
 
-    // Correct count
     this.add
       .text(
         width / 2,
         height * 0.38,
         `${this.correctCount} / ${QUESTIONS_PER_TEST} correct`,
         {
-          fontFamily: "system-ui, -apple-system, sans-serif",
+          fontFamily: FONTS.display,
           fontSize: `${Math.min(36, width * 0.065)}px`,
           color: COLORS.accent,
         },
@@ -313,11 +330,10 @@ export class TCAPQuizScene extends Phaser.Scene {
 
     let badgeY = height * 0.47;
 
-    // New high score badge
     if (isNewHS) {
       this.add
         .text(width / 2, badgeY, "\uD83C\uDFC6 New High Score!", {
-          fontFamily: "system-ui, -apple-system, sans-serif",
+          fontFamily: FONTS.display,
           fontSize: `${Math.min(30, width * 0.055)}px`,
           fontStyle: "bold",
           color: "#ffd93d",
@@ -326,7 +342,6 @@ export class TCAPQuizScene extends Phaser.Scene {
       badgeY += 50;
     }
 
-    // Streak badge
     if (this.maxStreak >= 4) {
       this.add
         .text(
@@ -334,7 +349,7 @@ export class TCAPQuizScene extends Phaser.Scene {
           badgeY,
           `\uD83D\uDD25 ${this.maxStreak}-answer streak!`,
           {
-            fontFamily: "system-ui, -apple-system, sans-serif",
+            fontFamily: FONTS.display,
             fontSize: `${Math.min(26, width * 0.047)}px`,
             color: "#ffb347",
           },
@@ -343,11 +358,10 @@ export class TCAPQuizScene extends Phaser.Scene {
       badgeY += 46;
     }
 
-    // Perfect score badge
     if (pct === 1.0) {
       this.add
         .text(width / 2, badgeY, "\uD83C\uDF1F Perfect Score!", {
-          fontFamily: "system-ui, -apple-system, sans-serif",
+          fontFamily: FONTS.display,
           fontSize: `${Math.min(28, width * 0.052)}px`,
           fontStyle: "bold",
           color: "#ff6b9d",
@@ -358,10 +372,9 @@ export class TCAPQuizScene extends Phaser.Scene {
 
     playSound(this, "fanfare");
 
-    // ── Buttons ───────────────────────────────────────────────────────
     const btnW = Math.min(width * 0.62, 380);
     const btnH = 82;
-    const btn1Y = height * 0.70;
+    const btn1Y = height * 0.7;
     const btn2Y = height * 0.82;
 
     const playAgainBtn = this.add
@@ -380,7 +393,7 @@ export class TCAPQuizScene extends Phaser.Scene {
 
     this.add
       .text(width / 2, btn1Y, "Play Again! \uD83D\uDE80", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.display,
         fontSize: `${Math.min(32, width * 0.058)}px`,
         fontStyle: "bold",
         color: COLORS.text,
@@ -396,7 +409,7 @@ export class TCAPQuizScene extends Phaser.Scene {
 
     this.add
       .text(width / 2, btn2Y, "\uD83C\uDFE0 Home", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.display,
         fontSize: `${Math.min(32, width * 0.058)}px`,
         fontStyle: "bold",
         color: COLORS.muted,

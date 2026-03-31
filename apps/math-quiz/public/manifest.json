@@ -1,7 +1,7 @@
 {
-  "name": "Aahana's Learning Apps",
-  "short_name": "Aahana Apps",
-  "description": "2nd Grade TCAP Math and ELA practice for Aahana",
+  "name": "Aahana's App",
+  "short_name": "Aahana App",
+  "description": "A colorful 2nd grade learning app with Math, ELA, and more worlds coming soon",
   "start_url": ".",
   "display": "standalone",
   "orientation": "portrait",

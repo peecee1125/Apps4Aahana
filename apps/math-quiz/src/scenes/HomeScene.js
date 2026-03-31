@@ -1,5 +1,11 @@
 import Phaser from "phaser";
-import { COLORS, playSound } from "../utils.js";
+import {
+  COLORS,
+  FONTS,
+  createCard,
+  paintPlayfulBackground,
+  playSound,
+} from "../utils.js";
 
 export class HomeScene extends Phaser.Scene {
   constructor() {
@@ -9,59 +15,65 @@ export class HomeScene extends Phaser.Scene {
   create() {
     const { width, height } = this.scale;
 
-    // Background
-    this.add.rectangle(width / 2, height / 2, width, height, COLORS.bg);
+    paintPlayfulBackground(this);
 
-    // Twinkling background stars
-    for (let i = 0; i < 22; i++) {
-      const x = Math.random() * width;
-      const y = Math.random() * height;
-      const r = 1.5 + Math.random() * 3;
-      const star = this.add.circle(x, y, r, 0xffd93d, 0.3 + Math.random() * 0.6);
-      this.tweens.add({
-        targets: star,
-        alpha: 0.05,
-        duration: 700 + Math.random() * 1300,
-        yoyo: true,
-        repeat: -1,
-        delay: Math.random() * 1000,
-      });
-    }
+    const { shadow: heroShadow, card: heroCard } = createCard(
+      this,
+      width / 2,
+      height * 0.2,
+      Math.min(width * 0.88, 600),
+      Math.min(height * 0.2, 220),
+      COLORS.panel,
+    );
+    heroShadow.setAlpha(0.32);
+    heroCard.setAlpha(0.94);
 
-    // Book icon circle
-    const iconR = Math.min(width * 0.13, 82);
-    this.add.circle(width / 2, height * 0.19, iconR, 0x6b35c8);
+    const iconR = Math.min(width * 0.1, 68);
+    this.add.circle(width / 2, height * 0.135, iconR, COLORS.sky, 0.95);
     this.add
-      .text(width / 2, height * 0.19, "\uD83D\uDCDA", {
+      .text(width / 2, height * 0.135, "\u2728", {
         fontSize: `${Math.min(68, width * 0.12)}px`,
       })
       .setOrigin(0.5);
 
-    // Title
     this.add
-      .text(width / 2, height * 0.34, "Aahana's\nLearning Apps", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: `${Math.min(52, width * 0.09)}px`,
+      .text(width / 2, height * 0.2, "Enter Aahana's App", {
+        fontFamily: FONTS.display,
+        fontSize: `${Math.min(56, width * 0.092)}px`,
         fontStyle: "bold",
         color: COLORS.accent,
         align: "center",
-        lineSpacing: 6,
+        lineSpacing: 4,
       })
       .setOrigin(0.5);
 
-    // Subtitle
     this.add
-      .text(width / 2, height * 0.46, "2nd Grade \u2022 TCAP Practice", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: `${Math.min(26, width * 0.046)}px`,
+      .text(
+        width / 2,
+        height * 0.255,
+        "Play, practice, and earn stars across colorful learning worlds.",
+        {
+          fontFamily: FONTS.body,
+          fontSize: `${Math.min(24, width * 0.042)}px`,
+          color: COLORS.text,
+          wordWrap: { width: width * 0.78 },
+          align: "center",
+        },
+      )
+      .setOrigin(0.5);
+
+    this.add
+      .text(width / 2, height * 0.33, "Choose a world to begin", {
+        fontFamily: FONTS.body,
+        fontSize: `${Math.min(28, width * 0.047)}px`,
         color: COLORS.muted,
       })
       .setOrigin(0.5);
 
     const btnW = Math.min(width * 0.78, 500);
-    const btnH = Math.min(height * 0.11, 128);
-    const btnGap = Math.min(height * 0.04, 44);
-    const btn1Y = height * 0.59;
+    const btnH = Math.min(height * 0.11, 124);
+    const btnGap = Math.min(height * 0.035, 40);
+    const btn1Y = height * 0.45;
     const btn2Y = btn1Y + btnH + btnGap;
 
     this._makeBtn(
@@ -70,8 +82,9 @@ export class HomeScene extends Phaser.Scene {
       btnW,
       btnH,
       "\uD83D\uDD22  Math Quiz",
-      0x6b35c8,
-      0x8855e8,
+      "Numbers, shapes, patterns, and TCAP practice",
+      COLORS.btn,
+      COLORS.btnHover,
       () => {
         playSound(this, "click");
         this.scene.start("SubjectMenuScene", { subject: "math" });
@@ -84,32 +97,86 @@ export class HomeScene extends Phaser.Scene {
       btnW,
       btnH,
       "\uD83D\uDCD6  ELA Quiz",
-      0x1a6fa8,
-      0x2a8fd8,
+      "Reading, grammar, writing, and practice tests",
+      COLORS.btnAlt,
+      COLORS.btnAltHover,
       () => {
         playSound(this, "click");
         this.scene.start("SubjectMenuScene", { subject: "ela" });
       },
     );
+
+    this.add
+      .text(width / 2, height * 0.67, "Coming soon", {
+        fontFamily: FONTS.display,
+        fontSize: `${Math.min(28, width * 0.05)}px`,
+        fontStyle: "bold",
+        color: COLORS.accent,
+      })
+      .setOrigin(0.5);
+
+    const roadmap = [
+      { label: "\uD83E\uDDEA Science", color: COLORS.mint },
+      { label: "\uD83C\uDF0D Geography", color: COLORS.orange },
+      { label: "\u2600\uFE0F Solar System", color: COLORS.sky },
+      { label: "\uD83E\uDDA6 Dinosaurs", color: COLORS.berry },
+      { label: "\uD83D\uDCA1 Fun Facts", color: COLORS.teal },
+    ];
+    const chipW = Math.min(width * 0.26, 168);
+    const chipH = 54;
+    const cols = 2;
+    const gapX = 18;
+    const gapY = 14;
+    const totalW = cols * chipW + gapX;
+    const startX = width / 2 - totalW / 2 + chipW / 2;
+    const startY = height * 0.73;
+
+    roadmap.forEach((item, index) => {
+      const col = index % cols;
+      const row = Math.floor(index / cols);
+      const isLast = index === roadmap.length - 1;
+      const x = isLast && row === 2 ? width / 2 : startX + col * (chipW + gapX);
+      const y = startY + row * (chipH + gapY);
+      const chip = this.add.rectangle(x, y, chipW, chipH, item.color, 0.92);
+      chip.setStrokeStyle(3, 0xffffff, 0.2);
+      this.add
+        .text(x, y, item.label, {
+          fontFamily: FONTS.body,
+          fontSize: `${Math.min(20, width * 0.032)}px`,
+          fontStyle: "bold",
+          color: COLORS.ink,
+        })
+        .setOrigin(0.5);
+    });
   }
 
-  _makeBtn(x, y, w, h, label, color, hoverColor, onClick) {
+  _makeBtn(x, y, w, h, label, subLabel, color, hoverColor, onClick) {
+    const shadow = this.add.rectangle(x, y + 8, w, h, 0x120a22, 0.28);
     const btn = this.add
       .rectangle(x, y, w, h, color)
       .setInteractive({ useHandCursor: true })
       .on("pointerover", () => btn.setFillStyle(hoverColor))
       .on("pointerout", () => btn.setFillStyle(color))
       .on("pointerdown", onClick);
+    btn.setStrokeStyle(4, 0xffffff, 0.18);
 
     this.add
-      .text(x, y, label, {
-        fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: `${Math.min(40, w * 0.1)}px`,
+      .text(x, y - h * 0.16, label, {
+        fontFamily: FONTS.display,
+        fontSize: `${Math.min(38, w * 0.082)}px`,
         fontStyle: "bold",
         color: COLORS.text,
       })
       .setOrigin(0.5);
 
-    return btn;
+    this.add
+      .text(x, y + h * 0.18, subLabel, {
+        fontFamily: FONTS.body,
+        fontSize: `${Math.min(20, w * 0.04)}px`,
+        color: COLORS.text,
+      })
+      .setOrigin(0.5);
+
+    return { shadow, btn };
   }
 }

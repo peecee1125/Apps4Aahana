@@ -1,26 +1,14 @@
 import Phaser from "phaser";
+import {
+  COLORS,
+  FONTS,
+  emitConfetti,
+  paintPlayfulBackground,
+  playSound,
+  shuffle,
+} from "../utils.js";
 
 const QUESTIONS_PER_ROUND = 10;
-
-const COLORS = {
-  bg: 0x2d1b4e,
-  panel: 0x4a2c7a,
-  btn: 0xff6b9d,
-  btnHover: 0xff8fb8,
-  correct: 0x6bcb77,
-  wrong: 0xff6b6b,
-  text: "#fff8f0",
-  accent: "#ffd93d",
-};
-
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 function makeProblem(round = 1) {
   const scale = Math.min(round, 5);
@@ -88,11 +76,20 @@ export class MathQuizScene extends Phaser.Scene {
     this.locked = false;
     this.problem = makeProblem(this.round);
 
-    this.add.rectangle(width / 2, height / 2, width, height, COLORS.bg);
+    paintPlayfulBackground(this);
+    this.headerPanel = this.add.rectangle(
+      width / 2,
+      height * 0.13,
+      Math.min(width * 0.9, 620),
+      Math.min(height * 0.18, 208),
+      COLORS.panel,
+      0.95,
+    );
+    this.headerPanel.setStrokeStyle(4, 0xffffff, 0.16);
 
     this.title = this.add
       .text(width / 2, height * 0.07, "Math Quiz \u2728", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.display,
         fontSize: `${Math.min(42, width * 0.07)}px`,
         fontStyle: "bold",
         color: COLORS.accent,
@@ -101,7 +98,7 @@ export class MathQuizScene extends Phaser.Scene {
 
     this.questionNumText = this.add
       .text(width / 2, height * 0.13, "", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.body,
         fontSize: `${Math.min(22, width * 0.04)}px`,
         color: COLORS.text,
       })
@@ -109,7 +106,7 @@ export class MathQuizScene extends Phaser.Scene {
 
     this.scoreText = this.add
       .text(width * 0.1, height * 0.2, "", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.display,
         fontSize: `${Math.min(24, width * 0.045)}px`,
         color: COLORS.text,
       })
@@ -117,7 +114,7 @@ export class MathQuizScene extends Phaser.Scene {
 
     this.streakText = this.add
       .text(width * 0.9, height * 0.2, "", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.display,
         fontSize: `${Math.min(22, width * 0.04)}px`,
         color: "#ffb347",
       })
@@ -125,7 +122,7 @@ export class MathQuizScene extends Phaser.Scene {
 
     this.questionText = this.add
       .text(width / 2, height * 0.34, "", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.display,
         fontSize: `${Math.min(56, width * 0.1)}px`,
         fontStyle: "bold",
         color: COLORS.text,
@@ -134,13 +131,14 @@ export class MathQuizScene extends Phaser.Scene {
 
     this.feedback = this.add
       .text(width / 2, height * 0.88, "", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.display,
         fontSize: `${Math.min(28, width * 0.05)}px`,
         color: COLORS.accent,
       })
       .setOrigin(0.5);
 
     this.buttons = [];
+    this.buttonShadows = [];
     this.answerLabels = [];
     this.refreshUI();
 
@@ -156,6 +154,7 @@ export class MathQuizScene extends Phaser.Scene {
   layout() {
     if (this.roundOver) return;
     const { width, height } = this.scale;
+    this.headerPanel.setPosition(width / 2, height * 0.13);
     this.title.setPosition(width / 2, height * 0.07);
     this.questionNumText.setPosition(width / 2, height * 0.13);
     this.scoreText.setPosition(width * 0.1, height * 0.2);
@@ -185,6 +184,8 @@ export class MathQuizScene extends Phaser.Scene {
     const { width, height } = this.scale;
     this.buttons.forEach((b) => b.destroy());
     this.buttons = [];
+    this.buttonShadows.forEach((b) => b.destroy());
+    this.buttonShadows = [];
     (this.answerLabels || []).forEach((t) => t.destroy());
     this.answerLabels = [];
 
@@ -204,6 +205,7 @@ export class MathQuizScene extends Phaser.Scene {
       const x = startX + col * (bw + gap);
       const y = startY + row * (bh + gap);
 
+      const shadow = this.add.rectangle(x, y + 7, bw, bh, 0x120a22, 0.26);
       const btn = this.add
         .rectangle(x, y, bw, bh, COLORS.btn)
         .setInteractive({ useHandCursor: true })
@@ -214,16 +216,18 @@ export class MathQuizScene extends Phaser.Scene {
           if (btn.fillColor !== COLORS.correct) btn.setFillStyle(COLORS.btn);
         })
         .on("pointerdown", () => this.pick(val));
+      btn.setStrokeStyle(3, 0xffffff, 0.15);
 
       const label = this.add
         .text(x, y, String(val), {
-          fontFamily: "system-ui, -apple-system, sans-serif",
+          fontFamily: FONTS.display,
           fontSize: `${Math.min(40, bw * 0.22)}px`,
           fontStyle: "bold",
           color: COLORS.text,
         })
         .setOrigin(0.5);
 
+      this.buttonShadows.push(shadow);
       this.buttons.push(btn);
       this.answerLabels.push(label);
     });
@@ -248,19 +252,27 @@ export class MathQuizScene extends Phaser.Scene {
         "Amazing! \uD83D\uDCAB",
         "Yes! \uD83C\uDF8A",
       ];
+      const pickedIdx = this.problem.choices.indexOf(choice);
+      if (pickedIdx >= 0 && this.buttons[pickedIdx]) {
+        this.buttons[pickedIdx].setFillStyle(COLORS.correct);
+      }
       this.feedback.setText(msgs[Math.floor(Math.random() * msgs.length)]);
-      this.emitConfetti(width / 2, height * 0.42);
-      this.playSound("correct");
+      emitConfetti(this, width / 2, height * 0.42);
+      playSound(this, "correct");
     } else {
       this.streak = 0;
       // Highlight the correct answer in green so the child learns
       const correctIdx = this.problem.choices.indexOf(this.problem.answer);
+      const pickedIdx = this.problem.choices.indexOf(choice);
+      if (pickedIdx >= 0 && this.buttons[pickedIdx]) {
+        this.buttons[pickedIdx].setFillStyle(COLORS.wrong);
+      }
       if (correctIdx >= 0 && this.buttons[correctIdx]) {
         this.buttons[correctIdx].setFillStyle(COLORS.correct);
       }
       this.feedback.setText(`The answer was ${this.problem.answer}`);
       this.cameras.main.shake(200, 0.012);
-      this.playSound("wrong");
+      playSound(this, "wrong");
     }
 
     this.scoreText.setText(`Score: ${this.score}`);
@@ -284,6 +296,8 @@ export class MathQuizScene extends Phaser.Scene {
     this.roundOver = true;
     const { width, height } = this.scale;
 
+    this.buttonShadows.forEach((b) => b.destroy());
+    this.buttonShadows = [];
     this.buttons.forEach((b) => b.destroy());
     this.buttons = [];
     this.answerLabels.forEach((t) => t.destroy());
@@ -320,7 +334,7 @@ export class MathQuizScene extends Phaser.Scene {
         height * 0.48,
         `${this.correctCount} / ${QUESTIONS_PER_ROUND} correct`,
         {
-          fontFamily: "system-ui, -apple-system, sans-serif",
+          fontFamily: FONTS.display,
           fontSize: `${Math.min(38, width * 0.07)}px`,
           color: COLORS.accent,
         },
@@ -340,7 +354,7 @@ export class MathQuizScene extends Phaser.Scene {
 
     this.add
       .text(width / 2, playAgainY, "Play Again! \uD83D\uDE80", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.display,
         fontSize: `${Math.min(36, width * 0.065)}px`,
         fontStyle: "bold",
         color: COLORS.text,
@@ -357,71 +371,14 @@ export class MathQuizScene extends Phaser.Scene {
 
     this.add
       .text(width / 2, homeY, "\uD83C\uDFE0 Home", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: FONTS.display,
         fontSize: `${Math.min(36, width * 0.065)}px`,
         fontStyle: "bold",
         color: "#c8a8ff",
       })
       .setOrigin(0.5);
 
-    this.playSound("fanfare");
-    this.emitConfetti(width / 2, height * 0.5);
-  }
-
-  playSound(type) {
-    try {
-      if (!this._audioCtx) {
-        this._audioCtx = new (
-          window.AudioContext || window.webkitAudioContext
-        )();
-      }
-      const ctx = this._audioCtx;
-      if (ctx.state === "suspended") ctx.resume();
-
-      const schedule = (freq, startOffset, duration, oscType = "sine") => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.frequency.value = freq;
-        osc.type = oscType;
-        const t = ctx.currentTime + startOffset;
-        gain.gain.setValueAtTime(0.25, t);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
-        osc.start(t);
-        osc.stop(t + duration);
-      };
-
-      if (type === "correct") {
-        schedule(523, 0, 0.28);
-        schedule(659, 0.13, 0.28);
-      } else if (type === "wrong") {
-        schedule(180, 0, 0.3, "sawtooth");
-      } else if (type === "fanfare") {
-        [523, 659, 784, 1047].forEach((freq, i) =>
-          schedule(freq, i * 0.16, 0.35),
-        );
-      }
-    } catch (e) {
-      // Silent fallback when Web Audio is unavailable
-    }
-  }
-
-  emitConfetti(x, y) {
-    const colors = [0xffd93d, 0xff6b9d, 0x6bcb77, 0x4d96ff, 0xffa500];
-    for (let i = 0; i < 28; i++) {
-      const c = colors[i % colors.length];
-      const star = this.add.circle(x, y, 6 + Math.random() * 6, c);
-      this.tweens.add({
-        targets: star,
-        x: x + (Math.random() - 0.5) * 220,
-        y: y + (Math.random() - 0.5) * 180,
-        alpha: 0,
-        scale: 0.2,
-        duration: 500 + Math.random() * 400,
-        ease: "Cubic.easeOut",
-        onComplete: () => star.destroy(),
-      });
-    }
+    playSound(this, "fanfare");
+    emitConfetti(this, width / 2, height * 0.5);
   }
 }

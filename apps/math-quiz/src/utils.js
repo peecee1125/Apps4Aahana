@@ -1,15 +1,114 @@
 export const COLORS = {
   bg: 0x2d1b4e,
   panel: 0x4a2c7a,
+  panelAlt: 0x243b6b,
+  panelSoft: 0x5a3c8a,
   btn: 0xff6b9d,
   btnHover: 0xff8fb8,
+  btnAlt: 0x4dc7ff,
+  btnAltHover: 0x7ed9ff,
+  mint: 0x6bcb77,
+  orange: 0xffb347,
+  sky: 0x4d96ff,
+  teal: 0x2ec4b6,
+  berry: 0xef476f,
   correct: 0x6bcb77,
   wrong: 0xff6b6b,
   passage: 0x3d2b5e,
   text: "#fff8f0",
   accent: "#ffd93d",
   muted: "#c8a8ff",
+  ink: "#22153d",
 };
+
+export const FONTS = {
+  display: '"Avenir Next", "Trebuchet MS", "Gill Sans", sans-serif',
+  body: '"Avenir Next", "Trebuchet MS", "Gill Sans", sans-serif',
+};
+
+export function paintPlayfulBackground(scene, options = {}) {
+  const { width, height } = scene.scale;
+  const base = options.baseColor ?? COLORS.bg;
+
+  scene.add.rectangle(width / 2, height / 2, width, height, base);
+
+  const blobs = [
+    {
+      x: width * 0.18,
+      y: height * 0.14,
+      r: width * 0.24,
+      color: COLORS.sky,
+      alpha: 0.18,
+    },
+    {
+      x: width * 0.84,
+      y: height * 0.2,
+      r: width * 0.2,
+      color: COLORS.orange,
+      alpha: 0.14,
+    },
+    {
+      x: width * 0.16,
+      y: height * 0.82,
+      r: width * 0.22,
+      color: COLORS.teal,
+      alpha: 0.14,
+    },
+    {
+      x: width * 0.84,
+      y: height * 0.78,
+      r: width * 0.26,
+      color: COLORS.berry,
+      alpha: 0.12,
+    },
+  ];
+
+  blobs.forEach(({ x, y, r, color, alpha }) => {
+    scene.add.circle(x, y, r, color, alpha);
+  });
+
+  for (let i = 0; i < 24; i++) {
+    const star = scene.add.circle(
+      Math.random() * width,
+      Math.random() * height,
+      1.5 + Math.random() * 3,
+      0xfff2a8,
+      0.35 + Math.random() * 0.35,
+    );
+    scene.tweens.add({
+      targets: star,
+      alpha: 0.08,
+      duration: 900 + Math.random() * 1400,
+      yoyo: true,
+      repeat: -1,
+      delay: Math.random() * 700,
+    });
+  }
+
+  const footer = scene.add.ellipse(
+    width / 2,
+    height * 1.02,
+    width * 1.25,
+    height * 0.22,
+    0x201338,
+    0.95,
+  );
+  footer.setDepth(0);
+}
+
+export function createCard(
+  scene,
+  x,
+  y,
+  width,
+  height,
+  fillColor = COLORS.panel,
+) {
+  const shadow = scene.add.rectangle(x, y + 8, width, height, 0x120a22, 0.3);
+  const card = scene.add.rectangle(x, y, width, height, fillColor);
+  card.setStrokeStyle(4, 0xffffff, 0.14);
+  return { shadow, card };
+}
 
 export function shuffle(arr) {
   const a = [...arr];
