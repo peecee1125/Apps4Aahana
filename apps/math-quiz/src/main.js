@@ -8,11 +8,16 @@ new Phaser.Game({
   type: Phaser.AUTO,
   parent: "game-container",
   backgroundColor: "#2d1b4e",
+  antialias: true,
+  antialiasGL: true,
+  roundPixels: true,
+  resolution: window.devicePixelRatio || 1,
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: 1280,
     height: 800,
+    zoom: 1 / (window.devicePixelRatio || 1),
   },
   scene: [HomeScene, SubjectMenuScene, TCAPQuizScene, MathQuizScene],
 });

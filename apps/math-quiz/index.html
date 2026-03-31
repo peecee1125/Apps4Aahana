@@ -29,6 +29,12 @@
         height: 100%;
         height: 100dvh;
       }
+      /* Prevent browser from applying its own bilinear blur over the canvas */
+      #game-container canvas {
+        image-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        display: block;
+      }
     </style>
   </head>
   <body>
