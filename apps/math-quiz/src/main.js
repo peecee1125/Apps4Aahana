@@ -12,5 +12,4 @@ new Phaser.Game({
     height: 1280,
   },
   scene: [MathQuizScene],
-  physics: { default: "arcade", arcade: { gravity: { y: 0 } } },
 });
