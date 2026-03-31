@@ -1,0 +1,14 @@
+# Copy this file and uncomment/edit for Portainer → Stacks → Web editor.
+# One stack per app is simplest; merge multiple services here if you prefer.
+
+# services:
+#   my-app:
+#     image: your-registry/my-app:latest
+#     # Or build from ./apps/my-app:
+#     # build:
+#     #   context: ./apps/my-app
+#     restart: unless-stopped
+#     ports:
+#       - "8080:80"
+#     environment:
+#       - NODE_ENV=production
