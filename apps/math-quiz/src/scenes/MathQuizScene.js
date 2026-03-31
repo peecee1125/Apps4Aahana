@@ -347,6 +347,23 @@ export class MathQuizScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
+    const homeY = height * 0.74;
+    const homeBtn = this.add
+      .rectangle(width / 2, homeY, bw, bh, 0x4a2c7a)
+      .setInteractive({ useHandCursor: true })
+      .on("pointerover", () => homeBtn.setFillStyle(0x5a3c8a))
+      .on("pointerout", () => homeBtn.setFillStyle(0x4a2c7a))
+      .on("pointerdown", () => this.scene.start("HomeScene"));
+
+    this.add
+      .text(width / 2, homeY, "\uD83C\uDFE0 Home", {
+        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontSize: `${Math.min(36, width * 0.065)}px`,
+        fontStyle: "bold",
+        color: "#c8a8ff",
+      })
+      .setOrigin(0.5);
+
     this.playSound("fanfare");
     this.emitConfetti(width / 2, height * 0.5);
   }

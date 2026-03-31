@@ -1,4 +1,7 @@
 import Phaser from "phaser";
+import { HomeScene } from "./scenes/HomeScene.js";
+import { SubjectMenuScene } from "./scenes/SubjectMenuScene.js";
+import { TCAPQuizScene } from "./scenes/TCAPQuizScene.js";
 import { MathQuizScene } from "./scenes/MathQuizScene.js";
 
 new Phaser.Game({
@@ -11,5 +14,5 @@ new Phaser.Game({
     width: 720,
     height: 1280,
   },
-  scene: [MathQuizScene],
+  scene: [HomeScene, SubjectMenuScene, TCAPQuizScene, MathQuizScene],
 });

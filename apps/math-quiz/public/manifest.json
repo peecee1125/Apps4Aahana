@@ -1,7 +1,7 @@
 {
-  "name": "Math Quiz — Aahana",
-  "short_name": "Math Quiz",
-  "description": "A fun math quiz for Aahana",
+  "name": "Aahana's Learning Apps",
+  "short_name": "Aahana Apps",
+  "description": "2nd Grade TCAP Math and ELA practice for Aahana",
   "start_url": ".",
   "display": "standalone",
   "orientation": "portrait",
