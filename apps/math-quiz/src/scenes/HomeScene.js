@@ -3,6 +3,7 @@ import {
   COLORS,
   FONTS,
   createCard,
+  createNavHeader,
   paintPlayfulBackground,
   playSound,
 } from "../utils.js";
@@ -16,6 +17,7 @@ export class HomeScene extends Phaser.Scene {
     const { width, height } = this.scale;
 
     paintPlayfulBackground(this);
+    createNavHeader(this, { title: "✨ Aahana’s App", showHome: false });
 
     const { shadow: heroShadow, card: heroCard } = createCard(
       this,

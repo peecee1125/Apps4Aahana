@@ -196,6 +196,83 @@ export function playSound(holder, type) {
   }
 }
 
+/**
+ * Creates a persistent 64-px navigation header strip at the very top of a scene.
+ * - Left:   🏠 Home button (hidden when showHome = false)
+ * - Center: title text
+ * - Right:  optional breadcrumb label
+ *
+ * Returns { titleObj, NAV_H } so callers can update the title dynamically.
+ */
+export function createNavHeader(scene, opts = {}) {
+  const {
+    title = "Aahana\u2019s App",
+    showHome = true,
+    onHome,
+    rightLabel = "",
+  } = opts;
+  const { width } = scene.scale;
+  const NAV_H = 64;
+  const cy = NAV_H / 2;
+
+  // background strip
+  scene.add.rectangle(width / 2, cy, width, NAV_H, 0x130a25, 0.97).setDepth(20);
+
+  // gold accent bottom line
+  scene.add
+    .rectangle(width / 2, NAV_H - 1, width, 3, 0xffd93d, 0.75)
+    .setDepth(20);
+
+  // title (centered)
+  const titleObj = scene.add
+    .text(width / 2, cy, title, {
+      fontFamily: FONTS.display,
+      fontSize: `${Math.min(26, width * 0.038)}px`,
+      fontStyle: "bold",
+      color: COLORS.accent,
+    })
+    .setOrigin(0.5)
+    .setDepth(20);
+
+  if (showHome) {
+    const btnW = 116;
+    const btn = scene.add
+      .rectangle(btnW / 2 + 8, cy, btnW, 44, COLORS.panelSoft, 0.95)
+      .setInteractive({ useHandCursor: true })
+      .setDepth(20);
+    btn.setStrokeStyle(2, 0xffffff, 0.18);
+    btn.on("pointerover", () => btn.setFillStyle(COLORS.panelAlt));
+    btn.on("pointerout", () => btn.setFillStyle(COLORS.panelSoft));
+    btn.on("pointerdown", () => {
+      playSound(scene, "click");
+      if (onHome) onHome();
+      else scene.scene.start("HomeScene");
+    });
+    scene.add
+      .text(btnW / 2 + 8, cy, "\uD83C\uDFE0 Home", {
+        fontFamily: FONTS.body,
+        fontSize: `${Math.min(18, width * 0.028)}px`,
+        fontStyle: "bold",
+        color: COLORS.text,
+      })
+      .setOrigin(0.5)
+      .setDepth(20);
+  }
+
+  if (rightLabel) {
+    scene.add
+      .text(width - 14, cy, rightLabel, {
+        fontFamily: FONTS.body,
+        fontSize: `${Math.min(16, width * 0.026)}px`,
+        color: COLORS.muted,
+      })
+      .setOrigin(1, 0.5)
+      .setDepth(20);
+  }
+
+  return { titleObj, NAV_H };
+}
+
 export function emitConfetti(scene, x, y) {
   const colors = [0xffd93d, 0xff6b9d, 0x6bcb77, 0x4d96ff, 0xffa500];
   for (let i = 0; i < 28; i++) {

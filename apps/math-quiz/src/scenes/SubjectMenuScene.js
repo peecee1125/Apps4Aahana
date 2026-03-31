@@ -3,6 +3,7 @@ import {
   COLORS,
   FONTS,
   createCard,
+  createNavHeader,
   getHS,
   paintPlayfulBackground,
   playSound,
@@ -74,6 +75,10 @@ export class SubjectMenuScene extends Phaser.Scene {
     const accentEmoji = isMath ? "\uD83E\uDDEE" : "\uD83D\uDCDA";
 
     paintPlayfulBackground(this);
+    createNavHeader(this, {
+      title: isMath ? "🔢 Math Quiz" : "📖 ELA Quiz",
+      showHome: true,
+    });
 
     const titleLabel = isMath
       ? "\uD83D\uDD22 Math Quiz"
@@ -178,32 +183,5 @@ export class SubjectMenuScene extends Phaser.Scene {
         })
         .setOrigin(0.5);
     });
-
-    const backY = startY + tests.length * (btnH + btnGap) + btnGap * 0.7;
-    const backBtn = this.add
-      .rectangle(
-        width / 2,
-        backY,
-        Math.min(width * 0.5, 280),
-        66,
-        COLORS.panelSoft,
-      )
-      .setInteractive({ useHandCursor: true })
-      .on("pointerover", () => backBtn.setFillStyle(COLORS.panelAlt))
-      .on("pointerout", () => backBtn.setFillStyle(COLORS.panelSoft))
-      .on("pointerdown", () => {
-        playSound(this, "click");
-        this.scene.start("HomeScene");
-      });
-    backBtn.setStrokeStyle(3, 0xffffff, 0.15);
-
-    this.add
-      .text(width / 2, backY, "\u2190 Home", {
-        fontFamily: FONTS.display,
-        fontSize: `${Math.min(28, width * 0.05)}px`,
-        fontStyle: "bold",
-        color: COLORS.text,
-      })
-      .setOrigin(0.5);
   }
 }

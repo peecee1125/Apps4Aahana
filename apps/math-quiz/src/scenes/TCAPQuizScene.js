@@ -6,6 +6,7 @@ import {
   playSound,
   emitConfetti,
   getHS,
+  createNavHeader,
   paintPlayfulBackground,
   setHS,
   updateBestStreak,
@@ -52,27 +53,27 @@ export class TCAPQuizScene extends Phaser.Scene {
 
     paintPlayfulBackground(this);
 
+    // Persistent nav bar (64px) — shows test label + Home button
+    const { titleObj: navTitle } = createNavHeader(this, {
+      title: this.testLabel,
+      showHome: true,
+      onHome: () => this.scene.start("HomeScene"),
+    });
+    this._navTitle = navTitle;
+
+    // Score band just below the nav bar
     this.headerPanel = this.add.rectangle(
       width / 2,
-      height * 0.1,
+      104,
       Math.min(width * 0.92, 640),
-      Math.min(height * 0.15, 180),
+      76,
       this.subject === "math" ? COLORS.panel : COLORS.panelAlt,
       0.95,
     );
-    this.headerPanel.setStrokeStyle(4, 0xffffff, 0.16);
-
-    this.titleText = this.add
-      .text(width / 2, height * 0.055, this.testLabel, {
-        fontFamily: FONTS.display,
-        fontSize: `${Math.min(28, width * 0.05)}px`,
-        fontStyle: "bold",
-        color: COLORS.accent,
-      })
-      .setOrigin(0.5);
+    this.headerPanel.setStrokeStyle(3, 0xffffff, 0.14);
 
     this.qCountText = this.add
-      .text(width / 2, height * 0.1, "", {
+      .text(width / 2, 94, "", {
         fontFamily: FONTS.body,
         fontSize: `${Math.min(22, width * 0.04)}px`,
         color: COLORS.text,
@@ -80,17 +81,17 @@ export class TCAPQuizScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.scoreText = this.add
-      .text(width * 0.08, height * 0.15, "", {
+      .text(width * 0.08, 118, "", {
         fontFamily: FONTS.display,
-        fontSize: `${Math.min(22, width * 0.04)}px`,
+        fontSize: `${Math.min(20, width * 0.036)}px`,
         color: COLORS.text,
       })
       .setOrigin(0, 0.5);
 
     this.streakText = this.add
-      .text(width * 0.92, height * 0.15, "", {
+      .text(width * 0.92, 118, "", {
         fontFamily: FONTS.display,
-        fontSize: `${Math.min(20, width * 0.037)}px`,
+        fontSize: `${Math.min(19, width * 0.034)}px`,
         color: "#ffb347",
       })
       .setOrigin(1, 0.5);
@@ -116,11 +117,10 @@ export class TCAPQuizScene extends Phaser.Scene {
   _onResize() {
     if (this.roundOver || this.locked) return;
     const { width, height } = this.scale;
-    this.headerPanel.setPosition(width / 2, height * 0.1);
-    this.titleText.setPosition(width / 2, height * 0.055);
-    this.qCountText.setPosition(width / 2, height * 0.1);
-    this.scoreText.setPosition(width * 0.08, height * 0.15);
-    this.streakText.setPosition(width * 0.92, height * 0.15);
+    this.headerPanel.setPosition(width / 2, 104);
+    this.qCountText.setPosition(width / 2, 94);
+    this.scoreText.setPosition(width * 0.08, 118);
+    this.streakText.setPosition(width * 0.92, 118);
     this.feedbackText.setPosition(width / 2, height * 0.93);
     this._clearDyn();
     this._renderQuestion();
@@ -295,7 +295,9 @@ export class TCAPQuizScene extends Phaser.Scene {
     this.streakText.setVisible(false);
     this.feedbackText.setVisible(false);
 
-    this.titleText.setText("Round Complete! \uD83C\uDF93");
+    // Update the persistent nav bar title
+    if (this._navTitle) this._navTitle.setText("Round Complete! \uD83C\uDF93");
+
     this.scoreText
       .setOrigin(0.5)
       .setPosition(width / 2, height * 0.16)
@@ -374,8 +376,7 @@ export class TCAPQuizScene extends Phaser.Scene {
 
     const btnW = Math.min(width * 0.62, 380);
     const btnH = 82;
-    const btn1Y = height * 0.7;
-    const btn2Y = height * 0.82;
+    const btn1Y = height * 0.76;
 
     const playAgainBtn = this.add
       .rectangle(width / 2, btn1Y, btnW, btnH, COLORS.btn)
@@ -397,22 +398,6 @@ export class TCAPQuizScene extends Phaser.Scene {
         fontSize: `${Math.min(32, width * 0.058)}px`,
         fontStyle: "bold",
         color: COLORS.text,
-      })
-      .setOrigin(0.5);
-
-    const homeBtn = this.add
-      .rectangle(width / 2, btn2Y, btnW, btnH, 0x4a2c7a)
-      .setInteractive({ useHandCursor: true })
-      .on("pointerover", () => homeBtn.setFillStyle(0x5a3c8a))
-      .on("pointerout", () => homeBtn.setFillStyle(0x4a2c7a))
-      .on("pointerdown", () => this.scene.start("HomeScene"));
-
-    this.add
-      .text(width / 2, btn2Y, "\uD83C\uDFE0 Home", {
-        fontFamily: FONTS.display,
-        fontSize: `${Math.min(32, width * 0.058)}px`,
-        fontStyle: "bold",
-        color: COLORS.muted,
       })
       .setOrigin(0.5);
   }
