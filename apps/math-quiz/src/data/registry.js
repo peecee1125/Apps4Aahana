@@ -51,7 +51,13 @@ export const SUBJECTS = {
         emoji: "📊",
         questions: mathPractice2,
       },
-      { key: "ch", label: "Challenge!", emoji: "🏆", questions: advancedMath },
+      {
+        key: "ch",
+        label: "Challenge!",
+        emoji: "🏆",
+        variant: "challenge",
+        questions: advancedMath,
+      },
     ],
   },
   ela: {
@@ -102,6 +108,7 @@ export const SUBJECTS = {
         key: "ch",
         label: "Challenge!",
         emoji: "🏆",
+        variant: "challenge",
         questions: scienceAdvanced,
       },
     ],
@@ -128,6 +135,7 @@ export const SUBJECTS = {
         key: "ch",
         label: "Challenge!",
         emoji: "🏆",
+        variant: "challenge",
         questions: geographyAdvanced,
       },
     ],
@@ -150,7 +158,13 @@ export const SUBJECTS = {
         emoji: "🚀",
         questions: solarPractice2,
       },
-      { key: "ch", label: "Challenge!", emoji: "🏆", questions: solarAdvanced },
+      {
+        key: "ch",
+        label: "Challenge!",
+        emoji: "🏆",
+        variant: "challenge",
+        questions: solarAdvanced,
+      },
     ],
   },
   dinosaurs: {
@@ -175,6 +189,7 @@ export const SUBJECTS = {
         key: "ch",
         label: "Challenge!",
         emoji: "🏆",
+        variant: "challenge",
         questions: dinosaurAdvanced,
       },
     ],
@@ -201,6 +216,7 @@ export const SUBJECTS = {
         key: "ch",
         label: "Challenge!",
         emoji: "🏆",
+        variant: "challenge",
         questions: funFactsAdvanced,
       },
     ],
@@ -215,29 +231,48 @@ export const SUBJECTS = {
         key: "math",
         label: "Advanced Math",
         emoji: "🔢",
+        variant: "advanced",
         questions: advancedMath,
       },
       {
         key: "science",
         label: "Advanced Science",
         emoji: "🔬",
+        variant: "advanced",
         questions: advancedScience,
       },
       {
         key: "ela",
         label: "Advanced ELA",
         emoji: "📖",
+        variant: "advanced",
         questions: advancedELA,
       },
       {
         key: "world",
         label: "World Knowledge",
         emoji: "🌍",
+        variant: "advanced",
         questions: advancedWorld,
       },
     ],
   },
 };
+
+/** 1–3 stars from score (same thresholds as results UI). */
+export function starsFromScore(score) {
+  return score >= 90 ? 3 : score >= 70 ? 2 : 1;
+}
+
+/** Keep localStorage history bounded (newest attempts kept). */
+export const MAX_HISTORY_ENTRIES = 500;
+
+export function trimHistory(history) {
+  if (!Array.isArray(history) || history.length <= MAX_HISTORY_ENTRIES) {
+    return history;
+  }
+  return history.slice(-MAX_HISTORY_ENTRIES);
+}
 
 export function loadHighScore(subjectKey, testKey) {
   try {
@@ -262,7 +297,9 @@ const HISTORY_KEY = "quiz-history";
 export function loadHistory() {
   try {
     const raw = localStorage.getItem(HISTORY_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const parsed = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(parsed)) return [];
+    return trimHistory(parsed);
   } catch {
     return [];
   }
@@ -270,9 +307,8 @@ export function loadHistory() {
 
 export function saveAttempt(subjectKey, testKey, data) {
   try {
-    const history = loadHistory();
-    history.push({ subjectKey, testKey, ...data });
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    const history = [...loadHistory(), { subjectKey, testKey, ...data }];
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(trimHistory(history)));
   } catch {}
 }
 

@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import { SUBJECTS, loadHistory } from "../data/registry";
+import { subjectHasCustomQuestions } from "../data/questionStore";
 import { useSound } from "../hooks/useSound";
 
 const KEYS = Object.keys(SUBJECTS);
 
-export default function HomeScreen({ onSelect, onHistory }) {
+export default function HomeScreen({ onSelect, onHistory, onRefresh }) {
   const { playTap } = useSound();
   const year = new Date().getFullYear();
   const totalStars = loadHistory().reduce((sum, a) => sum + (a.stars ?? 0), 0);
@@ -30,14 +31,14 @@ export default function HomeScreen({ onSelect, onHistory }) {
           transition={{ delay: 0.1 }}
         >
           <span className="text-white font-extrabold text-3xl drop-shadow-lg">
-            ✨ Aahana's Learning App ✨
+            ✨ Aahana&apos;s Learning App ✨
           </span>
         </motion.div>
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-purple-300 text-sm font-semibold mt-0.5"
+          className="text-zinc-200 text-sm font-semibold mt-0.5"
         >
           Pick a subject and start learning!
         </motion.p>
@@ -71,6 +72,18 @@ export default function HomeScreen({ onSelect, onHistory }) {
               <span className="text-white font-extrabold text-lg leading-tight text-center px-2 drop-shadow">
                 {s.label}
               </span>
+              {subjectHasCustomQuestions(key, s.tests) && (
+                <span
+                  className="absolute top-2 left-2 text-xs font-black px-1.5 py-0.5 rounded-full"
+                  style={{
+                    background: "rgba(52,211,153,0.2)",
+                    color: "#34d399",
+                    border: "1px solid rgba(52,211,153,0.45)",
+                  }}
+                >
+                  ✨
+                </span>
+              )}
               {key === "advanced" && (
                 <span
                   className="absolute top-2 right-2 text-xs font-black px-2 py-0.5 rounded-full"
@@ -86,25 +99,43 @@ export default function HomeScreen({ onSelect, onHistory }) {
 
       {/* Footer */}
       <div className="flex items-center justify-between px-4 py-2 shrink-0">
-        <span className="text-purple-400/70 text-xs font-semibold">
+        <span className="text-zinc-400 text-xs font-semibold">
           Developed by Dad ❤️ &nbsp;© {year} prateekchhabra.com
         </span>
-        <motion.button
-          whileTap={{ scale: 0.93 }}
-          onClick={() => {
-            playTap();
-            onHistory();
-          }}
-          className="flex items-center gap-2 px-4 py-2 rounded-full font-extrabold text-sm"
-          style={{
-            background: "rgba(251,191,36,0.15)",
-            border: "1.5px solid rgba(251,191,36,0.45)",
-            color: "#fbbf24",
-          }}
-        >
-          <span>⭐</span>
-          <span>My Stars {totalStars > 0 && `(${totalStars})`}</span>
-        </motion.button>
+        <div className="flex gap-2">
+          <motion.button
+            whileTap={{ scale: 0.93 }}
+            onClick={() => {
+              playTap();
+              onRefresh();
+            }}
+            className="flex items-center gap-2 px-4 py-2 rounded-full font-extrabold text-sm"
+            style={{
+              background: "rgba(52,211,153,0.12)",
+              border: "1.5px solid rgba(52,211,153,0.35)",
+              color: "#34d399",
+            }}
+          >
+            <span>🔄</span>
+            <span>Questions</span>
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.93 }}
+            onClick={() => {
+              playTap();
+              onHistory();
+            }}
+            className="flex items-center gap-2 px-4 py-2 rounded-full font-extrabold text-sm"
+            style={{
+              background: "rgba(251,191,36,0.15)",
+              border: "1.5px solid rgba(251,191,36,0.45)",
+              color: "#fbbf24",
+            }}
+          >
+            <span>⭐</span>
+            <span>My Stars {totalStars > 0 && `(${totalStars})`}</span>
+          </motion.button>
+        </div>
       </div>
     </motion.div>
   );

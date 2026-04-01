@@ -5,6 +5,7 @@ import SubjectMenuScreen from "./screens/SubjectMenuScreen";
 import QuizScreen from "./screens/QuizScreen";
 import ResultsScreen from "./screens/ResultsScreen";
 import HistoryScreen from "./screens/HistoryScreen";
+import RefreshScreen from "./screens/RefreshScreen";
 
 export default function App() {
   const [nav, setNav] = useState({
@@ -38,7 +39,11 @@ export default function App() {
           Rotate your iPad!
         </div>
         <div
-          style={{ fontSize: 18, color: "rgba(255,255,255,0.6)", marginTop: 8 }}
+          style={{
+            fontSize: 18,
+            color: "rgba(255,255,255,0.82)",
+            marginTop: 8,
+          }}
         >
           This app works best in landscape mode.
         </div>
@@ -51,6 +56,7 @@ export default function App() {
               go({ screen: "subject", subject, testIdx: null, results: null })
             }
             onHistory={() => go({ screen: "history" })}
+            onRefresh={() => go({ screen: "refresh" })}
           />
         )}
         {nav.screen === "subject" && (
@@ -85,6 +91,9 @@ export default function App() {
         )}
         {nav.screen === "history" && (
           <HistoryScreen key="history" onBack={() => go({ screen: "home" })} />
+        )}
+        {nav.screen === "refresh" && (
+          <RefreshScreen key="refresh" onBack={() => go({ screen: "home" })} />
         )}
       </AnimatePresence>
     </div>

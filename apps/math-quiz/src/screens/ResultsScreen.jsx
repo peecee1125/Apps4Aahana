@@ -5,9 +5,13 @@ import {
   loadHighScore,
   saveHighScore,
   saveAttempt,
+  starsFromScore,
 } from "../data/registry";
 import NavHeader from "../components/NavHeader";
 import { useSound } from "../hooks/useSound";
+
+/** Dedupe persistence + fanfare when React Strict Mode remounts the results screen. */
+const persistedCompletionIds = new Set();
 
 const CONFETTI = ["⭐", "🌟", "✨", "🎉", "🎊", "💫", "🏆", "💛", "🎈", "🌈"];
 
@@ -51,11 +55,14 @@ export default function ResultsScreen({
   const { playFanfare } = useSound();
   const subj = SUBJECTS[subject];
   const test = subj?.tests[testIdx];
-  const { score, bestStreak } = results;
-  const stars = score >= 90 ? 3 : score >= 70 ? 2 : 1;
+  const { score, bestStreak, completionId } = results ?? {};
+  const stars = starsFromScore(score);
   const [isNewHigh, setIsNewHigh] = useState(false);
 
   useEffect(() => {
+    if (completionId == null) return;
+    if (persistedCompletionIds.has(completionId)) return;
+    persistedCompletionIds.add(completionId);
     playFanfare();
     const prev = loadHighScore(subject, test?.key);
     if (!prev || score > prev.score) {
@@ -69,7 +76,16 @@ export default function ResultsScreen({
       subjectLabel: subj?.label,
       testLabel: test?.label,
     });
-  }, []); // eslint-disable-line
+  }, [
+    completionId,
+    playFanfare,
+    score,
+    stars,
+    subject,
+    subj?.label,
+    test?.key,
+    test?.label,
+  ]);
 
   const badges = [
     isNewHigh && { icon: "🏆", label: "New High Score!" },
@@ -126,7 +142,7 @@ export default function ResultsScreen({
           transition={{ delay: 0.3 }}
           className="text-center"
         >
-          <div className="text-white/60 font-bold text-lg">
+          <div className="text-zinc-200 font-bold text-lg">
             {subj?.emoji} {test?.label}
           </div>
           <div
@@ -134,9 +150,9 @@ export default function ResultsScreen({
             style={{ color: "#fbbf24" }}
           >
             {score}
-            <span className="text-3xl text-white/40">/100</span>
+            <span className="text-3xl text-zinc-400">/100</span>
           </div>
-          <div className="text-white/50 text-base mt-1">
+          <div className="text-zinc-300 text-base mt-1">
             {score / 10} of 10 correct
           </div>
         </motion.div>
@@ -187,8 +203,8 @@ export default function ResultsScreen({
             onClick={onSubjectMenu}
             className="px-8 py-4 rounded-2xl font-extrabold text-white text-lg shadow-xl"
             style={{
-              background: "rgba(255,255,255,0.1)",
-              border: "1px solid rgba(255,255,255,0.2)",
+              background: "rgba(255,255,255,0.14)",
+              border: "1px solid rgba(255,255,255,0.28)",
             }}
           >
             📋 All Tests
