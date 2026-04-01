@@ -11,10 +11,35 @@ Educational and fun apps for an 8-year-old, built with **Phaser 3** (small HTML5
 
 - **Folder:** `apps/math-quiz`
 - **Run locally (dev):** `cd apps/math-quiz && npm install && npm run dev` — open the URL Vite prints.
+- **Run locally (dev, specific port):** `cd apps/math-quiz && npm run dev -- --port 4545`
 - **Run locally (production build):** `npm run build && npm run preview`
 - **Docker:** from repo root: `docker compose build math-quiz && docker compose up -d math-quiz` → `http://<host>:9080`
 
 On the iPad, use **`http://<NAS-LAN-IP>:9080`** (same Wi‑Fi as the NAS). Large buttons and `viewport-fit=cover` help with touch and full-screen feel.
+
+### Subjects
+
+8 subjects, each with 2–3 tests (Practice 1, Practice 2, and optionally a Challenge):
+
+| Subject | Emoji | Tests |
+|---|---|---|
+| Math | 🔢 | Practice 1, Practice 2, Challenge |
+| ELA | 📖 | Practice 1, Practice 2, Practice 3 |
+| Science | 🔬 | Practice 1, Practice 2, Challenge |
+| Geography | 🌍 | Practice 1, Practice 2, Challenge |
+| Solar System | 🪐 | Practice 1, Practice 2, Challenge |
+| Dinosaurs | 🦕 | Practice 1, Practice 2, Challenge |
+| Fun Facts | 🌟 | Practice 1, Practice 2, Challenge |
+| Advanced | ⭐ | Advanced Math, Science, ELA, World Knowledge |
+
+### Features
+
+- **10 randomised questions** per test drawn from the subject's question bank.
+- **Scoring:** 10 pts per correct answer; 1–3 ⭐ stars awarded (1 star ≥ 0, 2 stars ≥ 70, 3 stars ≥ 90).
+- **Best score** per test is saved and shown on the subject menu so Aahana can see her personal best.
+- **Star history:** every attempt is recorded in `localStorage`. Tap **⭐ My Stars** on the home screen to see a full history of all attempts (score, stars, subject, date) and a running total of stars earned.
+- **Streak tracking:** best consecutive correct answer streak is tracked per session and shown at results.
+- **Sound effects & confetti** on results for 2–3 star scores.
 
 ## Private GitHub repo → Portainer on the NAS
 
