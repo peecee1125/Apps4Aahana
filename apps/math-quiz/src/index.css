@@ -1,12 +1,15 @@
 @import "tailwindcss";
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -22,10 +25,17 @@ html, body {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(-3deg); }
-  50%       { transform: translateY(-10px) rotate(3deg); }
+  0%,
+  100% {
+    transform: translateY(0px) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(3deg);
+  }
 }
-.float { animation: float 3s ease-in-out infinite; }
+.float {
+  animation: float 3s ease-in-out infinite;
+}
 
 /* Portrait-mode overlay — only visible when rotated to portrait */
 .rotate-overlay {
@@ -41,5 +51,7 @@ html, body {
   padding: 32px;
 }
 @media (orientation: portrait) {
-  .rotate-overlay { display: flex; }
+  .rotate-overlay {
+    display: flex;
+  }
 }
