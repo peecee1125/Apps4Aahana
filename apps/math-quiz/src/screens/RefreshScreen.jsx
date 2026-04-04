@@ -82,7 +82,7 @@ export default function RefreshScreen({ onBack }) {
     >
       <NavHeader title="🔄 Refresh Questions" onBack={onBack} />
 
-      <div className="flex-1 overflow-y-auto px-5 pb-6 min-h-0 flex flex-col gap-3 pt-3">
+      <div className="flex-1 overflow-y-auto px-3 sm:px-5 pb-6 min-h-0 flex flex-col gap-3 pt-3">
         {/* API Key card */}
         <div
           className="rounded-2xl p-4 border border-white/10 shrink-0"
@@ -167,35 +167,48 @@ export default function RefreshScreen({ onBack }) {
               style={{ background: "rgba(255,255,255,0.04)" }}
             >
               {/* Subject header row */}
-              <button
-                className="w-full flex items-center gap-3 px-5 py-4"
+              <div
+                role="button"
+                tabIndex={0}
+                className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 cursor-pointer text-left"
                 onClick={() => setExpanded(isOpen ? null : subjectKey)}
+                onKeyDown={(e) =>
+                  (e.key === "Enter" || e.key === " ") &&
+                  setExpanded(isOpen ? null : subjectKey)
+                }
               >
                 <span className="text-3xl">{subj.emoji}</span>
-                <div className="flex-1 text-left">
+                <div className="flex-1 text-left min-w-0">
                   <div className="text-white font-bold text-base">
                     {subj.label}
                   </div>
                   <div className="text-white/35 text-xs">
                     {subj.tests.length} tests
+                    {freshCount > 0 &&
+                      ` · ${freshCount}/${subj.tests.length} fresh ✨`}
                   </div>
                 </div>
-                {freshCount > 0 && (
-                  <span
-                    className="text-xs font-bold px-2 py-1 rounded-full shrink-0"
-                    style={{
-                      background: "rgba(52,211,153,0.15)",
-                      color: "#34d399",
-                      border: "1px solid rgba(52,211,153,0.35)",
-                    }}
-                  >
-                    ✨ {freshCount}/{subj.tests.length} fresh
-                  </span>
-                )}
-                <span className="text-white/30 text-lg ml-1 shrink-0">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    generateAll(subjectKey);
+                  }}
+                  disabled={!canGenerate}
+                  className="shrink-0 text-xs px-2.5 py-1 rounded-full font-bold"
+                  style={{
+                    background: canGenerate
+                      ? "rgba(124,58,237,0.25)"
+                      : "rgba(255,255,255,0.04)",
+                    color: canGenerate ? "#a78bfa" : "rgba(255,255,255,0.15)",
+                    border: "1px solid rgba(124,58,237,0.35)",
+                  }}
+                >
+                  🔄
+                </button>
+                <span className="text-white/30 text-lg shrink-0">
                   {isOpen ? "▾" : "›"}
                 </span>
-              </button>
+              </div>
 
               {/* Expanded tests */}
               <AnimatePresence initial={false}>
@@ -207,27 +220,7 @@ export default function RefreshScreen({ onBack }) {
                     transition={{ duration: 0.22 }}
                     style={{ overflow: "hidden" }}
                   >
-                    <div className="px-5 pb-4 flex flex-col gap-2 border-t border-white/08 pt-3">
-                      {/* Refresh All button */}
-                      <div className="flex justify-end mb-1">
-                        <button
-                          disabled={!canGenerate}
-                          onClick={() => generateAll(subjectKey)}
-                          className="text-xs px-3 py-1.5 rounded-full font-bold"
-                          style={{
-                            background: canGenerate
-                              ? "rgba(124,58,237,0.25)"
-                              : "rgba(255,255,255,0.04)",
-                            color: canGenerate
-                              ? "#a78bfa"
-                              : "rgba(255,255,255,0.2)",
-                            border: "1px solid rgba(124,58,237,0.35)",
-                          }}
-                        >
-                          🔄 Refresh All Tests
-                        </button>
-                      </div>
-
+                    <div className="px-3 sm:px-5 pb-4 flex flex-col gap-2 border-t border-white/08 pt-3">
                       {subj.tests.map((test) => {
                         const id = `${subjectKey}-${test.key}`;
                         const existing = loadCustomQuestions(

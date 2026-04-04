@@ -201,7 +201,7 @@ export default function QuizScreen({ subject, testIdx, onComplete, onBack }) {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="text-zinc-50 font-extrabold text-2xl leading-snug shrink-0"
+            className="text-zinc-50 font-extrabold text-xl sm:text-2xl leading-snug shrink-0"
           >
             {q.question}
           </motion.p>
@@ -233,7 +233,7 @@ export default function QuizScreen({ subject, testIdx, onComplete, onBack }) {
                     background: bgChoice,
                     cursor: answered ? "default" : "pointer",
                     transition: "background 0.25s",
-                    minHeight: 110,
+                    minHeight: "clamp(72px, 15vh, 110px)",
                   }}
                 >
                   <span
@@ -248,7 +248,7 @@ export default function QuizScreen({ subject, testIdx, onComplete, onBack }) {
                   >
                     {LABELS[i]}
                   </span>
-                  <span className="text-zinc-50 font-semibold text-xl leading-snug">
+                  <span className="text-zinc-50 font-semibold text-base sm:text-xl leading-snug">
                     {choice}
                   </span>
                 </motion.button>

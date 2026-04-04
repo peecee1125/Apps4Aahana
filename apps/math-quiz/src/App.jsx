@@ -25,29 +25,6 @@ export default function App() {
         background: "#0f0a2e",
       }}
     >
-      {/* Portrait-mode overlay — hidden in landscape via CSS */}
-      <div className="rotate-overlay">
-        <div style={{ fontSize: 72 }}>📱</div>
-        <div
-          style={{
-            fontSize: 28,
-            fontWeight: 900,
-            color: "#fff",
-            marginTop: 12,
-          }}
-        >
-          Rotate your iPad!
-        </div>
-        <div
-          style={{
-            fontSize: 18,
-            color: "rgba(255,255,255,0.82)",
-            marginTop: 8,
-          }}
-        >
-          This app works best in landscape mode.
-        </div>
-      </div>
       <AnimatePresence mode="wait">
         {nav.screen === "home" && (
           <HomeScreen

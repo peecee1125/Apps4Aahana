@@ -116,7 +116,7 @@ export default function ResultsScreen({
         backLabel="🏠 Home"
       />
 
-      <div className="flex-1 flex flex-col items-center justify-center gap-5 px-8 min-h-0">
+      <div className="flex-1 flex flex-col items-center justify-center gap-3 sm:gap-5 px-5 sm:px-8 min-h-0">
         {/* Stars */}
         <motion.div
           initial={{ scale: 0 }}
@@ -127,7 +127,7 @@ export default function ResultsScreen({
           {[1, 2, 3].map((s) => (
             <span
               key={s}
-              className="text-5xl drop-shadow-lg"
+              className="text-4xl sm:text-5xl drop-shadow-lg"
               style={{ opacity: stars >= s ? 1 : 0.18 }}
             >
               ⭐
@@ -146,7 +146,7 @@ export default function ResultsScreen({
             {subj?.emoji} {test?.label}
           </div>
           <div
-            className="font-black text-8xl leading-none mt-1"
+            className="font-black text-5xl sm:text-7xl leading-none mt-1"
             style={{ color: "#fbbf24" }}
           >
             {score}
@@ -191,7 +191,7 @@ export default function ResultsScreen({
           <motion.button
             whileTap={{ scale: 0.93 }}
             onClick={onPlayAgain}
-            className="px-8 py-4 rounded-2xl font-extrabold text-white text-lg shadow-xl"
+            className="px-5 sm:px-8 py-3 sm:py-4 rounded-2xl font-extrabold text-white text-base sm:text-lg shadow-xl"
             style={{
               background: subj?.bg ?? "linear-gradient(135deg,#7c3aed,#4f46e5)",
             }}
@@ -201,7 +201,7 @@ export default function ResultsScreen({
           <motion.button
             whileTap={{ scale: 0.93 }}
             onClick={onSubjectMenu}
-            className="px-8 py-4 rounded-2xl font-extrabold text-white text-lg shadow-xl"
+            className="px-5 sm:px-8 py-3 sm:py-4 rounded-2xl font-extrabold text-white text-base sm:text-lg shadow-xl"
             style={{
               background: "rgba(255,255,255,0.14)",
               border: "1px solid rgba(255,255,255,0.28)",

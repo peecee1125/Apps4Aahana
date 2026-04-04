@@ -34,7 +34,7 @@ export default function NavHeader({ title, onBack, backLabel = "🏠 Home" }) {
         <div style={{ minWidth: 88 }} />
       )}
       <div className="flex-1 text-center">
-        <span className="text-white font-extrabold text-lg tracking-wide">
+        <span className="text-white font-extrabold text-base sm:text-lg tracking-wide">
           {title}
         </span>
       </div>

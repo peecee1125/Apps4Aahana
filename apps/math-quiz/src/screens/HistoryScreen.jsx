@@ -33,7 +33,7 @@ export default function HistoryScreen({ onBack }) {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="mx-6 mt-3 mb-2 rounded-2xl flex items-center justify-center gap-4 py-4 shrink-0"
+        className="mx-3 sm:mx-6 mt-3 mb-2 rounded-2xl flex items-center justify-center gap-4 py-4 shrink-0"
         style={{
           background: "rgba(251,191,36,0.14)",
           border: "1.5px solid rgba(251,191,36,0.5)",
@@ -45,7 +45,7 @@ export default function HistoryScreen({ onBack }) {
             Total Stars Earned
           </div>
           <div
-            className="font-black text-5xl leading-none"
+            className="font-black text-4xl sm:text-5xl leading-none"
             style={{ color: "#fbbf24" }}
           >
             {totalStars}
@@ -56,7 +56,7 @@ export default function HistoryScreen({ onBack }) {
         </span>
       </motion.div>
 
-      <div className="flex-1 overflow-y-auto px-6 pb-6 min-h-0 flex flex-col gap-2">
+      <div className="flex-1 overflow-y-auto px-3 sm:px-6 pb-6 min-h-0 flex flex-col gap-2">
         {history.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center">
             <span className="text-6xl">🌟</span>
@@ -103,7 +103,9 @@ export default function HistoryScreen({ onBack }) {
                     style={{ color: "#fbbf24" }}
                   >
                     {attempt.score}
-                    <span className="text-zinc-400 text-xs font-bold">/100</span>
+                    <span className="text-zinc-400 text-xs font-bold">
+                      /100
+                    </span>
                   </div>
                   <div className="text-base mt-0.5">
                     {[1, 2, 3].map((s) => (

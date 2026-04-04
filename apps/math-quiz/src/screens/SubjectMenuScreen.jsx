@@ -32,7 +32,7 @@ export default function SubjectMenuScreen({ subject, onBack, onSelect }) {
         </span>
       </div>
 
-      <div className="flex-1 flex flex-col gap-4 px-10 pb-8 justify-center min-h-0">
+      <div className="flex-1 flex flex-col gap-4 px-4 sm:px-10 pb-8 justify-center min-h-0">
         {subj.tests.map((test, i) => {
           const hs = loadHighScore(subject, test.key);
           const isChallenge = test.variant === "challenge";
@@ -62,12 +62,13 @@ export default function SubjectMenuScreen({ subject, onBack, onSelect }) {
             >
               <span className="text-4xl mr-4">{test.emoji}</span>
               <div className="flex flex-col flex-1 text-left">
-                <span className="text-white font-extrabold text-xl drop-shadow-sm">
+                <span className="text-white font-extrabold text-lg sm:text-xl drop-shadow-sm">
                   {test.label}
                 </span>
                 {hs ? (
                   <span className="text-white/85 text-sm font-semibold mt-0.5">
-                    Best: {hs.score}/100 &nbsp;<Stars score={hs.score} />
+                    Best: {hs.score}/100 &nbsp;
+                    <Stars score={hs.score} />
                   </span>
                 ) : (
                   <span className="text-zinc-200/90 text-sm font-medium">

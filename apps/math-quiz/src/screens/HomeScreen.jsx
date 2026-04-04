@@ -30,7 +30,7 @@ export default function HomeScreen({ onSelect, onHistory, onRefresh }) {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.1 }}
         >
-          <span className="text-white font-extrabold text-3xl drop-shadow-lg">
+          <span className="text-white font-extrabold text-2xl sm:text-3xl drop-shadow-lg">
             ✨ Aahana&apos;s Learning App ✨
           </span>
         </motion.div>
@@ -44,8 +44,8 @@ export default function HomeScreen({ onSelect, onHistory, onRefresh }) {
         </motion.p>
       </div>
 
-      {/* 4×2 subject grid */}
-      <div className="flex-1 grid grid-cols-4 grid-rows-2 gap-3 px-4 pb-2 min-h-0">
+      {/* subject grid: 2×4 on portrait/small, 4×2 on sm+ (landscape / tablets) */}
+      <div className="flex-1 grid grid-cols-2 grid-rows-4 sm:grid-cols-4 sm:grid-rows-2 gap-3 px-4 pb-2 min-h-0">
         {KEYS.map((key, i) => {
           const s = SUBJECTS[key];
           return (
@@ -68,8 +68,10 @@ export default function HomeScreen({ onSelect, onHistory, onRefresh }) {
               className="relative flex flex-col items-center justify-center rounded-2xl shadow-xl border border-white/10 overflow-hidden"
               style={{ background: s.bg, cursor: "pointer" }}
             >
-              <span className="text-5xl mb-1 drop-shadow float">{s.emoji}</span>
-              <span className="text-white font-extrabold text-lg leading-tight text-center px-2 drop-shadow">
+              <span className="text-4xl sm:text-5xl mb-1 drop-shadow float">
+                {s.emoji}
+              </span>
+              <span className="text-white font-extrabold text-sm sm:text-lg leading-tight text-center px-2 drop-shadow">
                 {s.label}
               </span>
               {subjectHasCustomQuestions(key, s.tests) && (
@@ -99,7 +101,7 @@ export default function HomeScreen({ onSelect, onHistory, onRefresh }) {
 
       {/* Footer */}
       <div className="flex items-center justify-between px-4 py-2 shrink-0">
-        <span className="text-zinc-400 text-xs font-semibold">
+        <span className="text-zinc-400 text-xs font-semibold hidden sm:block">
           Developed by Dad ❤️ &nbsp;© {year} prateekchhabra.com
         </span>
         <div className="flex gap-2">
