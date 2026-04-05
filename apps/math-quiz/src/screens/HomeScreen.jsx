@@ -103,6 +103,7 @@ export default function HomeScreen({ onSelect, onHistory, onRefresh }) {
       <div className="flex items-center justify-between px-4 py-2 shrink-0">
         <span className="text-zinc-400 text-xs font-semibold hidden sm:block">
           Developed by Dad ❤️ &nbsp;© {year} prateekchhabra.com
+          <span className="ml-2 opacity-50">v{__APP_VERSION__}</span>
         </span>
         <div className="flex gap-2">
           <motion.button
