@@ -1,6 +1,6 @@
 import { useReducer, useLayoutEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SUBJECTS, shuffle } from "../data/registry";
+import { SUBJECTS, shuffle, pickRepresentative } from "../data/registry";
 import { loadCustomQuestions } from "../data/questionStore";
 import NavHeader from "../components/NavHeader";
 import { useSound } from "../hooks/useSound";
@@ -15,9 +15,10 @@ const BG_WRONG = "#b91c1c";
 
 function initState(questions) {
   return {
-    questions: shuffle(questions)
-      .slice(0, PER_ROUND)
-      .map((q) => ({ ...q, choices: shuffle(q.choices) })),
+    questions: pickRepresentative(questions, PER_ROUND).map((q) => ({
+      ...q,
+      choices: shuffle(q.choices),
+    })),
     index: 0,
     score: 0,
     streak: 0,
@@ -184,7 +185,7 @@ export default function QuizScreen({ subject, testIdx, onComplete, onBack }) {
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="shrink-0 rounded-xl px-4 py-3 text-zinc-100 text-sm leading-relaxed font-medium"
+              className="shrink-0 rounded-xl px-4 py-3 text-zinc-100 text-base leading-relaxed font-medium"
               style={{
                 background: "rgba(139,92,246,0.28)",
                 border: "1px solid rgba(196,181,253,0.45)",
@@ -242,8 +243,10 @@ export default function QuizScreen({ subject, testIdx, onComplete, onBack }) {
                       width: 30,
                       height: 30,
                       minWidth: 30,
-                      background: showLetterTint ? subj.color : bgChoice,
-                      color: "white",
+                      background: showLetterTint
+                        ? "rgba(255,255,255,0.92)"
+                        : "rgba(255,255,255,0.18)",
+                      color: showLetterTint ? subj.color : "white",
                     }}
                   >
                     {LABELS[i]}

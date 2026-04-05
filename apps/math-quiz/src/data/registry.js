@@ -320,3 +320,35 @@ export function shuffle(arr) {
   }
   return a;
 }
+
+/**
+ * Pick `count` questions from `pool` ensuring every _cat category is
+ * represented at least once before filling remaining slots randomly.
+ * Falls back to pure shuffle if no questions carry _cat tags.
+ */
+export function pickRepresentative(pool, count = 10) {
+  if (!pool || pool.length === 0) return [];
+  const tagged = pool.filter((q) => q._cat);
+  if (tagged.length === 0) return shuffle(pool).slice(0, count);
+
+  // Group by category
+  const groups = {};
+  for (const q of tagged) {
+    (groups[q._cat] = groups[q._cat] || []).push(q);
+  }
+
+  // Pick one random question from each category
+  const picked = [];
+  const usedIds = new Set();
+  for (const cat of Object.keys(groups)) {
+    const candidates = shuffle(groups[cat]);
+    const q = candidates[0];
+    picked.push(q);
+    usedIds.add(q);
+  }
+
+  // Fill remaining slots from the full shuffled pool (excluding already picked)
+  const remaining = shuffle(pool).filter((q) => !usedIds.has(q));
+  const combined = shuffle([...picked, ...remaining]).slice(0, count);
+  return combined;
+}
