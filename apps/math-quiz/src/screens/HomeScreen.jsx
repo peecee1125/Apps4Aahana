@@ -5,10 +5,22 @@ import { useSound } from "../hooks/useSound";
 
 const KEYS = Object.keys(SUBJECTS);
 
+function formatReleaseDate(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!m) return iso;
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  return d.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export default function HomeScreen({ onSelect, onHistory, onRefresh }) {
   const { playTap } = useSound();
   const year = new Date().getFullYear();
   const totalStars = loadHistory().reduce((sum, a) => sum + (a.stars ?? 0), 0);
+  const releaseLabel = formatReleaseDate(__RELEASE_DATE__);
 
   return (
     <motion.div
@@ -101,10 +113,15 @@ export default function HomeScreen({ onSelect, onHistory, onRefresh }) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between px-4 py-2 shrink-0">
+      <div className="flex flex-col shrink-0">
+        <div className="text-center text-zinc-500 text-[11px] font-semibold py-1 sm:hidden">
+          Released {releaseLabel} · v{__APP_VERSION__}
+        </div>
+        <div className="flex items-center justify-between px-4 py-2">
         <span className="text-zinc-400 text-xs font-semibold hidden sm:block">
           Developed by Dad ❤️ &nbsp;© {year} prateekchhabra.com
           <span className="ml-2 opacity-50">v{__APP_VERSION__}</span>
+          <span className="ml-2 opacity-50">Released {releaseLabel}</span>
         </span>
         <div className="flex gap-2">
           <motion.button
@@ -139,6 +156,7 @@ export default function HomeScreen({ onSelect, onHistory, onRefresh }) {
             <span>⭐</span>
             <span>My Stars {totalStars > 0 && `(${totalStars})`}</span>
           </motion.button>
+        </div>
         </div>
       </div>
     </motion.div>

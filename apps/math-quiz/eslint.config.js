@@ -11,7 +11,11 @@ export default [
     files: ["**/*.{js,jsx}"],
     languageOptions: {
       ecmaVersion: 2022,
-      globals: { ...globals.browser, __APP_VERSION__: "readonly" },
+      globals: {
+        ...globals.browser,
+        __APP_VERSION__: "readonly",
+        __RELEASE_DATE__: "readonly",
+      },
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
     plugins: {
