@@ -86,6 +86,22 @@ export default function RefreshScreen({ onBack }) {
       <NavHeader title="🔄 Question bank tools" onBack={onBack} />
 
       <div className="flex-1 overflow-y-auto px-3 sm:px-5 pb-6 min-h-0 flex flex-col gap-3 pt-3">
+        <div
+          className="rounded-2xl p-3.5 border shrink-0"
+          style={{
+            background: "rgba(251,191,36,0.08)",
+            borderColor: "rgba(251,191,36,0.28)",
+          }}
+        >
+          <p className="text-amber-100/95 text-xs font-semibold leading-relaxed">
+            <span className="text-amber-300">⭐ Scores stay put.</span>{" "}
+            Generating, refreshing, or resetting AI question banks only changes
+            the question pool for each test. High scores and{" "}
+            <strong className="text-amber-200">⭐ My Stars</strong> history on this
+            device are stored separately and are not cleared here.
+          </p>
+        </div>
+
         {/* API Key card */}
         <div
           className="rounded-2xl p-4 border border-white/10 shrink-0"

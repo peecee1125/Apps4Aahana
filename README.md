@@ -42,6 +42,15 @@ Same eight **subject keys** for saved scores. Labels and **test names** now spel
 - **Streak tracking:** best consecutive correct answer streak is tracked per session and shown at results.
 - **Sound effects & confetti** on results for 2–3 star scores.
 
+### Refreshing questions (without losing scores or stars)
+
+High scores and **⭐ My Stars** history are keyed by **subject** and **test** identifiers in the browser’s `localStorage`, not by individual question text. You can safely:
+
+1. **In the app (home → 🔄 Questions):** Use **Question bank tools** with an OpenAI API key to generate or **Refresh** AI question sets per test, or **Reset** to go back to the built-in banks. None of that touches the saved best scores or star history.
+2. **In the repo:** Edit the built-in question files under `apps/math-quiz/src/data/` and redeploy, as long as you **do not rename** subject keys in `registry.js` or each test’s `key` field—renaming would orphan old progress under the old keys.
+
+**Caveat:** Progress is **per browser / device**. Clearing site data, a private tab that gets discarded, or a new iPad will not carry scores over unless you add your own export/backup later.
+
 ## Private GitHub repo → Portainer on the NAS
 
 You are not missing much: you need **either** the NAS to **build** the image from the repo **or** a place that already has a **built image** (recommended).
