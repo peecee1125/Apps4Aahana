@@ -79,7 +79,55 @@ export async function generateQuestions(
     `Return ONLY valid JSON (no markdown, no explanation):\n` +
     `{"questions":[{"q":"...","choices":["...","...","...","..."],"answer":"..."}]}`;
 
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+  // Helper: sleep for ms
+  function sleep(ms) {
+    return new Promise((r) => setTimeout(r, ms));
+  }
+
+  // Fetch with retry/backoff for 429/5xx responses. Honors Retry-After header if present.
+  async function fetchWithRetries(url, opts, maxAttempts = 4) {
+    const baseDelay = 600; // ms
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const res = await fetch(url, opts).catch((e) => ({ ok: false, status: 0, _err: e }));
+
+      // network-level failure
+      if (!res.ok && res.status === 0) {
+        if (attempt === maxAttempts) throw new Error(res._err?.message || "Network error");
+        const jitter = Math.floor(Math.random() * 200);
+        await sleep(baseDelay * attempt + jitter);
+        continue;
+      }
+
+      // success
+      if (res.ok) return res;
+
+      // parse possible error body safely
+      const body = await res.json().catch(() => ({}));
+
+      // retry on 429 or 5xx
+      if (res.status === 429 || (res.status >= 500 && res.status < 600)) {
+        if (attempt === maxAttempts) {
+          throw new Error(body?.error?.message ?? `API error ${res.status}`);
+        }
+
+        const ra = res.headers.get ? res.headers.get("Retry-After") : null;
+        let waitMs = baseDelay * Math.pow(2, attempt - 1);
+        if (ra) {
+          const sec = parseInt(ra, 10);
+          if (!Number.isNaN(sec)) waitMs = Math.max(waitMs, sec * 1000);
+        }
+        // add jitter
+        waitMs += Math.floor(Math.random() * 400);
+        await sleep(waitMs);
+        continue;
+      }
+
+      // non-retriable error
+      throw new Error(body?.error?.message ?? `API error ${res.status}`);
+    }
+  }
+
+  const res = await fetchWithRetries("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -91,11 +139,6 @@ export async function generateQuestions(
       temperature: 0.85,
     }),
   });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message ?? `API error ${res.status}`);
-  }
 
   const data = await res.json();
   const text = data.choices?.[0]?.message?.content ?? "";
