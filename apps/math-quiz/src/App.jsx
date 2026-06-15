@@ -5,8 +5,6 @@ import SubjectMenuScreen from "./screens/SubjectMenuScreen";
 import QuizScreen from "./screens/QuizScreen";
 import ResultsScreen from "./screens/ResultsScreen";
 import HistoryScreen from "./screens/HistoryScreen";
-import RefreshScreen from "./screens/RefreshScreen";
-
 export default function App() {
   const [nav, setNav] = useState({
     screen: "home",
@@ -33,7 +31,6 @@ export default function App() {
               go({ screen: "subject", subject, testIdx: null, results: null })
             }
             onHistory={() => go({ screen: "history" })}
-            onRefresh={() => go({ screen: "refresh" })}
           />
         )}
         {nav.screen === "subject" && (
@@ -69,9 +66,7 @@ export default function App() {
         {nav.screen === "history" && (
           <HistoryScreen key="history" onBack={() => go({ screen: "home" })} />
         )}
-        {nav.screen === "refresh" && (
-          <RefreshScreen key="refresh" onBack={() => go({ screen: "home" })} />
-        )}
+
       </AnimatePresence>
     </div>
   );

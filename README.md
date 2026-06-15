@@ -42,15 +42,20 @@ Same eight **subject keys** for saved scores. Labels and **test names** now spel
 - **Streak tracking:** best consecutive correct answer streak is tracked per session and shown at results.
 - **Sound effects & confetti** on results for 2–3 star scores.
 
-### Refreshing questions (without losing scores or stars)
+### Adding or refreshing questions
 
-High scores and **⭐ My Stars** history are keyed by **subject** and **test** identifiers in the browser’s `localStorage`, not by individual question text. You can safely:
+Questions live in plain JS arrays under `apps/math-quiz/src/data/`. Each file exports named arrays (e.g. `mathPractice1`, `elaPractice2`) registered in `registry.js`.
 
-1. **In the app (home → 🔄 Questions):** Open **AI question banks** with an OpenAI API key to generate or **Refresh** AI question sets per test, or **Reset** to go back to the built-in banks. None of that touches the saved best scores or star history.
-2. **In the repo:** Edit the built-in question files under `apps/math-quiz/src/data/` and redeploy, as long as you **do not rename** subject keys in `registry.js` or each test’s `key` field—renaming would orphan old progress under the old keys.
+**To add or replace questions:**
 
-**Caveat:** Progress is **per browser / device**. Clearing site data, a private tab that gets discarded, or a new iPad will not carry scores over unless you add your own export/backup later.
+1. Edit the relevant `*Questions.js` file (or add a new one and import it in `registry.js`).
+2. Keep the same `subjectKey` in `SUBJECTS` and the same `key` on each test — renaming either orphans existing progress.
+3. Each question needs: `q` (string), `choices` (4 strings), `answer` (exact match of one choice). Optionally: `_cat` for the representative-shuffle logic, `passage` for a reading excerpt.
+4. Commit and redeploy: `docker compose build math-quiz && docker compose up -d math-quiz`.
 
+**Scores and stars are not affected** — stored by subject/test key in `localStorage`, not by question text.
+
+**Caveat:** Progress is per browser/device. A new device or cleared site data will not carry scores over.
 ## Private GitHub repo → Portainer on the NAS
 
 You are not missing much: you need **either** the NAS to **build** the image from the repo **or** a place that already has a **built image** (recommended).

@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { SUBJECTS, loadHistory } from "../data/registry";
-import { subjectHasCustomQuestions } from "../data/questionStore";
 import { useSound } from "../hooks/useSound";
 
 const KEYS = Object.keys(SUBJECTS);
@@ -16,7 +15,7 @@ function formatReleaseDate(iso) {
   });
 }
 
-export default function HomeScreen({ onSelect, onHistory, onRefresh }) {
+export default function HomeScreen({ onSelect, onHistory }) {
   const { playTap } = useSound();
   const year = new Date().getFullYear();
   const totalStars = loadHistory().reduce((sum, a) => sum + (a.stars ?? 0), 0);
@@ -87,18 +86,6 @@ export default function HomeScreen({ onSelect, onHistory, onRefresh }) {
               <span className="text-white font-extrabold text-sm sm:text-lg leading-tight text-center px-2 drop-shadow">
                 {s.label}
               </span>
-              {subjectHasCustomQuestions(key, s.tests) && (
-                <span
-                  className="absolute top-2 left-2 text-xs font-black px-1.5 py-0.5 rounded-full"
-                  style={{
-                    background: "rgba(52,211,153,0.2)",
-                    color: "#34d399",
-                    border: "1px solid rgba(52,211,153,0.45)",
-                  }}
-                >
-                  ✨
-                </span>
-              )}
               {key === "advanced" && (
                 <span
                   className="absolute top-2 right-2 text-xs font-black px-2 py-0.5 rounded-full"
@@ -124,22 +111,6 @@ export default function HomeScreen({ onSelect, onHistory, onRefresh }) {
           <span className="ml-2 opacity-50">Released {releaseLabel}</span>
         </span>
         <div className="flex gap-2">
-          <motion.button
-            whileTap={{ scale: 0.93 }}
-            onClick={() => {
-              playTap();
-              onRefresh();
-            }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full font-extrabold text-sm"
-            style={{
-              background: "rgba(52,211,153,0.12)",
-              border: "1.5px solid rgba(52,211,153,0.35)",
-              color: "#34d399",
-            }}
-          >
-            <span>🔄</span>
-            <span>Questions</span>
-          </motion.button>
           <motion.button
             whileTap={{ scale: 0.93 }}
             onClick={() => {
