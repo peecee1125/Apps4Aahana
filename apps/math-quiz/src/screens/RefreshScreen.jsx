@@ -146,8 +146,9 @@ export default function RefreshScreen({ onBack }) {
     for (let i = 0; i < tests.length; i++) {
       setGenProgress({ current: i + 1, total: tests.length, subjectKey });
       await generate(subjectKey, tests[i]);
+      // 2 s gap between requests keeps us well under OpenAI rate limits
       if (i < tests.length - 1) {
-        await new Promise((r) => requestAnimationFrame(r));
+        await new Promise((r) => setTimeout(r, 2000));
       }
     }
     setGenProgress(null);
